@@ -64,10 +64,6 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private final SwerveDrive         swerveDrive;
   /**
-   * AprilTag field layout.
-   */
-  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
-  /**
    * Enable vision odometry updates while driving.
    */
   private final boolean             visionDriveTest     = false;
@@ -181,8 +177,9 @@ public class SwerveSubsystem extends SubsystemBase
                   speedsRobotRelative,
                   swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
                   moduleFeedForwards.linearForces()
-                               );
-            } else
+              );
+            } 
+            else
             {
               swerveDrive.setChassisSpeeds(speedsRobotRelative);
             }
@@ -202,7 +199,7 @@ public class SwerveSubsystem extends SubsystemBase
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
+            Optional<Alliance> alliance = DriverStation.getAlliance();
             if (alliance.isPresent())
             {
               return alliance.get() == DriverStation.Alliance.Red;
@@ -211,9 +208,10 @@ public class SwerveSubsystem extends SubsystemBase
           },
           this
           // Reference to this subsystem to set requirements
-                           );
+      );
 
-    } catch (Exception e)
+    } 
+    catch (Exception e)
     {
       // Handle exception as needed
       e.printStackTrace();
@@ -278,7 +276,7 @@ public class SwerveSubsystem extends SubsystemBase
         pose,
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
-                                     );
+    );
   }
 
   /**
