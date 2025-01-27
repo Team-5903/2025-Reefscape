@@ -15,8 +15,12 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -36,19 +40,27 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.Util.Util;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import org.ironmaple.simulation.SimulatedArena;
 import org.json.simple.parser.ParseException;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -79,6 +91,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(File directory)
   {
+    setName("SwerveSubsystem");
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
@@ -137,16 +150,46 @@ public class SwerveSubsystem extends SubsystemBase
   public void periodic()
   {
     // When vision is enabled we must manually update odometry in SwerveDrive
+    swerveDrive.updateOdometry();
     if (visionDriveTest)
     {
-      swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
     }
+
+    Logger.recordOutput("Drive/DrivePose", Robot.isSimulation() ? swerveDrive.getSimulationDriveTrainPose().get() : swerveDrive.getPose());
+    Logger.recordOutput("Drive/DriveDesiredStates", swerveDrive.getStates());
+    Logger.recordOutput("Drive/FieldVelocity", swerveDrive.getFieldVelocity());
+    Logger.recordOutput("Drive/RobotVelocity", swerveDrive.getRobotVelocity());
+    Logger.recordOutput("Drive/ModulePositions", swerveDrive.getModulePositions());
+
+
+    Logger.recordOutput("Drive/moduleCount", SwerveDriveTelemetry.moduleCount);
+    Logger.recordOutput("Drive/wheelLocations", SwerveDriveTelemetry.wheelLocations);
+    Logger.recordOutput("Drive/measuredStates", SwerveDriveTelemetry.measuredStates);
+    Logger.recordOutput("Drive/desiredStates", SwerveDriveTelemetry.desiredStates);
+    Logger.recordOutput("Drive/robotRotation", SwerveDriveTelemetry.robotRotation);
+    Logger.recordOutput("Drive/maxSpeed", SwerveDriveTelemetry.maxSpeed);
+    Logger.recordOutput("Drive/rotationUnit", SwerveDriveTelemetry.rotationUnit);
+    Logger.recordOutput("Drive/sizeLeftRight", SwerveDriveTelemetry.sizeLeftRight);
+    Logger.recordOutput("Drive/sizeFrontBack", SwerveDriveTelemetry.sizeFrontBack);
+    Logger.recordOutput("Drive/forwardDirection", SwerveDriveTelemetry.forwardDirection);
+    Logger.recordOutput("Drive/maxAngularVelocity", SwerveDriveTelemetry.maxAngularVelocity);
+    Logger.recordOutput("Drive/measuredChassisSpeeds", SwerveDriveTelemetry.measuredChassisSpeeds);
+    Logger.recordOutput("Drive/desiredChassisSpeeds", SwerveDriveTelemetry.desiredChassisSpeeds);
+
+
+    // for(SwerveModule module : swerveDrive.swerveDriveConfiguration.modules)
+    // {
+    //   Util.LogSpark("Drive/module" + module.moduleNumber + "/angle", (SparkMax)module.getAngleMotor().getMotor());
+    //   Util.LogSpark("Drive/module" + module.moduleNumber + "/drive", (SparkFlex)module.getDriveMotor().getMotor());
+    // }
   }
 
   @Override
   public void simulationPeriodic()
   {
+    Logger.recordOutput("Field/GameAlgaePieces", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+    Logger.recordOutput("Field/GameCoralPieces", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
   }
 
   /**
@@ -208,6 +251,18 @@ public class SwerveSubsystem extends SubsystemBase
           },
           this
           // Reference to this subsystem to set requirements
+      );
+
+      PathPlannerLogging.setLogActivePathCallback(
+          (activePath) -> {
+            Logger.recordOutput(
+                "Drive/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+          }
+      );
+      PathPlannerLogging.setLogTargetPoseCallback(
+          (targetPose) -> {
+            Logger.recordOutput("Drive/TrajectorySetpoint", targetPose);
+          }
       );
 
     } 
