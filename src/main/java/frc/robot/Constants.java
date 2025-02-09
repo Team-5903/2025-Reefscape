@@ -25,7 +25,7 @@ public final class Constants
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
   // Maximum speed of the robot in meters per second, used to limit acceleration.
 
-  public static final int PDH_ID = 22;
+  public static final int PDH_ID = 14;
 //  public static final class AutonConstants
 //  {
 //
@@ -38,6 +38,20 @@ public final class Constants
 
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
+  }
+  public static final class ElevatorConstants
+  { 
+     public static final int LIFT_MOTOR_LEFT = 9;
+     public static final int LIFT_MOTOR_RIGHT = 10;
+
+    public static final double FORWARD_LIMIT = 5000;
+  }
+  public static final class IntakeConstants
+  { 
+     public static final int INTAKE_MOTOR_LEFT = 11;
+     public static final int INTAKE_MOTOR_RIGHT = 12;
+
+    public static final double INTAKE_FEED_FORWARD = 1/917.0;
   }
 
   public static class OperatorConstants
