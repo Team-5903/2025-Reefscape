@@ -45,6 +45,18 @@ public final class Constants
      public static final int LIFT_MOTOR_RIGHT = 10;
 
     public static final double FORWARD_LIMIT = 5000;
+
+    public static final double SPOOL_DIAMETER = 1.0;
+    public static final double GEARBOX_RATIO = 15.0;
+    public static final double CONVERSION_RATIO = (1/GEARBOX_RATIO) * (SPOOL_DIAMETER * Math.PI);
+
+    public static final double INTAKE_HEIGHT = 0.0;
+    public static final double L1_HEIGHT = 10.0;
+    public static final double L2_HEIGHT = 20.0;
+    public static final double L3_HEIGHT = 30.0;
+    public static final double L4_HEIGHT = 40.0;
+    
+    public static final double SETPOINT_TOLERANCE = 1.0;
   }
   public static final class IntakeConstants
   { 

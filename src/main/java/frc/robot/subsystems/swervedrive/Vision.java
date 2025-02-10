@@ -362,7 +362,7 @@ public class Vision
                                  Units.inchesToMeters(-10.687),
                                  Units.inchesToMeters(16.129)),
                VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
-
+               
     /**
      * Latency alert to use when high latency is detected.
      */

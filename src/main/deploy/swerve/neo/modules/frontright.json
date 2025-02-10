@@ -1,11 +1,11 @@
 {
   "drive": {
     "type": "sparkflex_vortex",
-    "id": 2
+    "id": 4
   },
   "angle": {
     "type": "sparkmax_neo",
-    "id": 1
+    "id": 3
   },
   "encoder": {
     "type": "canandmag"

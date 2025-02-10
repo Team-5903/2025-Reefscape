@@ -13,12 +13,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import java.util.List;
@@ -44,6 +48,7 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
+  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
 
   private final LoggedDashboardChooser<Command> autoChooser;
   /**
@@ -145,6 +150,40 @@ public class RobotContainer
 
   
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
+
+    driverXbox
+      .rightBumper()
+      .and(() -> !elevator.isAtTop().getAsBoolean())
+      .whileTrue(
+        elevator.IncreaseHeightSetpoint()
+        .andThen(new WaitCommand(0.5))
+        .repeatedly()
+      );
+
+    driverXbox
+      .rightBumper()
+      .and(elevator.isAtTop())
+      .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kRightRumble, 1.0)))
+      .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kRightRumble, 0.0)));
+
+    driverXbox
+      .leftBumper()
+      .and(() -> !elevator.isAtBottom().getAsBoolean())
+      .whileTrue(
+        elevator.DecreaseHeightSetpoint()
+        .andThen(new WaitCommand(0.5))
+        .repeatedly()
+      );
+
+    driverXbox
+      .leftBumper()
+      .and(elevator.isAtBottom())
+      .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 1.0)))
+      .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 0.0)));
+
+
+
 
     if (Robot.isSimulation())
     {
