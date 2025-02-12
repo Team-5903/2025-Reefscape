@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.ejml.simple.SimpleMatrix;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -149,6 +152,16 @@ public class Vision
         swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
                                          pose.timestampSeconds,
                                          camera.curStdDevs);
+
+        Logger.recordOutput("Vision/" + camera.name() + "/Pose", pose.estimatedPose.toPose2d());
+        Logger.recordOutput("Vision/" + camera.name() + "/Timestamp", pose.timestampSeconds);
+        Logger.recordOutput("Vision/" + camera.name() + "/StdDevs", camera.curStdDevs);
+      }
+      else
+      {
+        Logger.recordOutput("Vision/" + camera.name() + "/Pose", new Pose2d());
+        Logger.recordOutput("Vision/" + camera.name() + "/Timestamp", -1.0);
+        Logger.recordOutput("Vision/" + camera.name() + "/StdDevs", new Matrix<N3, N1>(new SimpleMatrix(1, 1)));
       }
     }
 
@@ -307,27 +320,24 @@ public class Vision
     List<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
     for (Cameras c : Cameras.values())
     {
+      List<Pose2d> poses = new ArrayList<>();
       if (!c.resultsList.isEmpty())
       {
-        PhotonPipelineResult latest = c.resultsList.get(0);
-        if (latest.hasTargets())
+        if (c.resultsList.get(0).hasTargets())
         {
-          targets.addAll(latest.targets);
+          for (PhotonTrackedTarget target : targets)
+          {
+            if (fieldLayout.getTagPose(target.getFiducialId()).isPresent())
+            {
+              poses.add(fieldLayout.getTagPose(target.getFiducialId()).get().toPose2d());
+            }
+          }
+          
         }
       }
+      
+      Logger.recordOutput("Vision/" + c.name() + "/Targets", poses.toArray(Pose2d[]::new));
     }
-
-    List<Pose2d> poses = new ArrayList<>();
-    for (PhotonTrackedTarget target : targets)
-    {
-      if (fieldLayout.getTagPose(target.getFiducialId()).isPresent())
-      {
-        Pose2d targetPose = fieldLayout.getTagPose(target.getFiducialId()).get().toPose2d();
-        poses.add(targetPose);
-      }
-    }
-
-    field2d.getObject("tracked targets").setPoses(poses);
   }
 
   /**

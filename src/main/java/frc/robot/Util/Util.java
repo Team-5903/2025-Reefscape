@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
 
 public class Util {
-    
 
     public static void LogSpark(String logName, SparkBase sparkMax)
     {

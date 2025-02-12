@@ -154,6 +154,7 @@ public class SwerveSubsystem extends SubsystemBase
     if (visionDriveTest)
     {
       vision.updatePoseEstimation(swerveDrive);
+      vision.updateVisionField();
     }
 
     Logger.recordOutput("Drive/DrivePose", Robot.isSimulation() ? swerveDrive.getSimulationDriveTrainPose().get() : swerveDrive.getPose());

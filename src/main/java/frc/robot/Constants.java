@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -46,7 +47,7 @@ public final class Constants
 
     public static final double FORWARD_LIMIT = 5000;
 
-    public static final double SPOOL_DIAMETER = 1.0;
+    public static final double SPOOL_DIAMETER = Units.inchesToMeters(1.0);
     public static final double GEARBOX_RATIO = 15.0;
     public static final double CONVERSION_RATIO = (1/GEARBOX_RATIO) * (SPOOL_DIAMETER * Math.PI);
 
@@ -64,6 +65,8 @@ public final class Constants
      public static final int INTAKE_MOTOR_RIGHT = 12;
 
     public static final double INTAKE_FEED_FORWARD = 1/917.0;
+    public static final int CORAL_BEAM_BREAK_CHANNEL = 0;
+    public static final double INTAKE_CONVERSION_FACTOR = ((1/15) * (Units.inchesToMeters(4) * Math.PI)) / 60.0;
   }
 
   public static class OperatorConstants
@@ -74,5 +77,10 @@ public final class Constants
     public static final double LEFT_Y_DEADBAND = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT    = 6;
+  }
+
+  public static final class FieldConstants 
+  {
+    public static final Translation2d reefCenter = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
   }
 }
