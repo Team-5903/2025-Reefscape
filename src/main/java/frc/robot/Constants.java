@@ -83,4 +83,12 @@ public final class Constants
   {
     public static final Translation2d reefCenter = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
   }
+
+  public static final class ClimberConstants 
+  {
+    public static final int CLIMBER_MOTOR = 13;
+    public static final double FORWARD_LIMIT = 500;
+    public static final int LINEAR_ACTUATOR_LEFT = 0;
+    public static final int LINEAR_ACTUATOR_RIGHT = 1;
+  }
 }
