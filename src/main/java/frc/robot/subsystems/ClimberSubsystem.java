@@ -41,4 +41,6 @@ public class ClimberSubsystem extends SubsystemBase {
     Logger.recordOutput("Climber/actuatorLeftSet", linearActuatorLeft.getSpeed());
     Logger.recordOutput("Climber/actuatorRightSet", linearActuatorRight.getSpeed());
   }
+
+  // public Command
 }

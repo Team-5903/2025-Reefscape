@@ -154,35 +154,35 @@ public class RobotContainer
 
     elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
 
-    driverXbox
-      .rightBumper()
-      .and(() -> !elevator.isAtTop().getAsBoolean())
-      .whileTrue(
-        elevator.IncreaseHeightSetpoint()
-        .andThen(new WaitCommand(0.5))
-        .repeatedly()
-      );
+    // driverXbox
+    //   .rightBumper()
+    //   .and(() -> !elevator.isAtTop().getAsBoolean())
+    //   .whileTrue(
+    //     elevator.IncreaseHeightSetpoint()
+    //     .andThen(new WaitCommand(0.5))
+    //     .repeatedly()
+    //   );
 
-    driverXbox
-      .rightBumper()
-      .and(elevator.isAtTop())
-      .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kRightRumble, 1.0)))
-      .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kRightRumble, 0.0)));
+    // driverXbox
+    //   .rightBumper()
+    //   .and(elevator.isAtTop())
+    //   .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kRightRumble, 1.0)))
+    //   .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kRightRumble, 0.0)));
 
-    driverXbox
-      .leftBumper()
-      .and(() -> !elevator.isAtBottom().getAsBoolean())
-      .whileTrue(
-        elevator.DecreaseHeightSetpoint()
-        .andThen(new WaitCommand(0.5))
-        .repeatedly()
-      );
+    // driverXbox
+    //   .leftBumper()
+    //   .and(() -> !elevator.isAtBottom().getAsBoolean())
+    //   .whileTrue(
+    //     elevator.DecreaseHeightSetpoint()
+    //     .andThen(new WaitCommand(0.5))
+    //     .repeatedly()
+    //   );
 
-    driverXbox
-      .leftBumper()
-      .and(elevator.isAtBottom())
-      .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 1.0)))
-      .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 0.0)));
+    // driverXbox
+    //   .leftBumper()
+    //   .and(elevator.isAtBottom())
+    //   .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 1.0)))
+    //   .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 0.0)));
 
 
 
@@ -205,17 +205,17 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
-      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      driverXbox.b().whileTrue(
-          drivebase.driveToPose(
-              new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
-                              );
-      driverXbox.y().onTrue(Commands.runOnce(() -> SimulatedArena.getInstance().resetFieldForAuto(), drivebase));
-      driverXbox.start().whileTrue(Commands.none());
-      driverXbox.back().whileTrue(Commands.none());
-      driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().onTrue(Commands.none());
+      // driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+      // driverXbox.b().whileTrue(
+      //     drivebase.driveToPose(
+      //         new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
+      //                         );
+      // driverXbox.y().onTrue(Commands.runOnce(() -> SimulatedArena.getInstance().resetFieldForAuto(), drivebase));
+      // driverXbox.start().whileTrue(Commands.none());
+      // driverXbox.back().whileTrue(Commands.none());
+      // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      // driverXbox.rightBumper().onTrue(Commands.none());
     }
 
   }

@@ -20,6 +20,7 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -39,12 +40,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     SparkMaxConfig configLeft = new SparkMaxConfig();
     configLeft
         .smartCurrentLimit(50)
+        .inverted(true)
         .idleMode(IdleMode.kBrake)
         .softLimit.reverseSoftLimit(0)
         .reverseSoftLimitEnabled(true)
         .forwardSoftLimit(Constants.ElevatorConstants.FORWARD_LIMIT)
         .forwardSoftLimitEnabled(true);
+    configLeft.closedLoop.outputRange(-0.1, 0.1);
     configLeft.encoder.positionConversionFactor(Constants.ElevatorConstants.CONVERSION_RATIO);
+    configLeft.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
+      ;
+
+    
 
     SparkMaxConfig configRight = new SparkMaxConfig();
     configRight
