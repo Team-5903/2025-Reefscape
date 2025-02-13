@@ -8,10 +8,13 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Util.Util;
@@ -33,6 +36,9 @@ public class ClimberSubsystem extends SubsystemBase {
         .reverseSoftLimitEnabled(true)
         .forwardSoftLimit(Constants.ClimberConstants.FORWARD_LIMIT)
         .forwardSoftLimitEnabled(true);
+    config.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .p(0);
   }
 
   @Override
@@ -42,5 +48,40 @@ public class ClimberSubsystem extends SubsystemBase {
     Logger.recordOutput("Climber/actuatorRightSet", linearActuatorRight.getSpeed());
   }
 
-  // public Command
+  public Command DropCoralChute ()
+  {
+    return runOnce(() -> {
+      linearActuatorLeft.setSpeed(0);
+      linearActuatorRight.setSpeed(0);
+    });
+  }
+
+  public Command RaiseCoralChute()
+  {
+    return runOnce(() -> {
+      linearActuatorLeft.setSpeed(1);
+      linearActuatorRight.setSpeed(1);
+    });
+  }
+
+  public Command RaiseArm()
+  {
+    return runOnce(() -> {
+      climberMotor.getClosedLoopController().setReference(Constants.ElevatorConstants.FEED_FORWARD, ControlType.kPosition);
+    });
+  }
+
+  public Command LowerArm()
+  {
+    return runOnce(() -> {
+      climberMotor.getClosedLoopController().setReference(0, ControlType.kPosition);
+    });
+  }
+
+  public Command ClimbArm()
+  {
+    return runOnce(() -> {
+      climberMotor.getClosedLoopController().setReference(Constants.ClimberConstants.CLIMB_POSITION, ControlType.kPosition);
+    });
+  }
 }

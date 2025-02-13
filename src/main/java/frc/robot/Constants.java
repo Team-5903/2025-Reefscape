@@ -59,6 +59,7 @@ public final class Constants
     
     public static final double SETPOINT_TOLERANCE = 1.0;
     public static final double FEED_FORWARD = 0.02;
+    public static final double PID_P = 0.3;
   }
   public static final class IntakeConstants
   { 
@@ -91,5 +92,6 @@ public final class Constants
     public static final double FORWARD_LIMIT = 500;
     public static final int LINEAR_ACTUATOR_LEFT = 0;
     public static final int LINEAR_ACTUATOR_RIGHT = 1;
+    public static final int CLIMB_POSITION = 100;
   }
 }

@@ -9,6 +9,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import java.lang.StackWalker.Option;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -17,9 +19,11 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,10 +50,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         .reverseSoftLimitEnabled(true)
         .forwardSoftLimit(Constants.ElevatorConstants.FORWARD_LIMIT)
         .forwardSoftLimitEnabled(true);
-    configLeft.closedLoop.outputRange(-0.1, 0.1);
+    configLeft.closedLoop
+      .outputRange(-0.1, 0.4)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .p(Constants.ElevatorConstants.PID_P);
     configLeft.encoder.positionConversionFactor(Constants.ElevatorConstants.CONVERSION_RATIO);
-    configLeft.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
-      ;
+    // configLeft.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
 
     
 
@@ -77,7 +83,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void setSetpointPosition(ElevatorPosition currentPosition) {
     this.currentPosition = currentPosition;
-    liftMotorLeft.getClosedLoopController().setReference(currentPosition.height, ControlType.kMAXMotionPositionControl);
+    liftMotorLeft.getClosedLoopController().setReference(currentPosition.height, ControlType.kPosition, ClosedLoopSlot.kSlot0, Constants.ElevatorConstants.FEED_FORWARD * Volts.of(12).magnitude());
   }
 
   public Command IncreaseHeightSetpoint()
