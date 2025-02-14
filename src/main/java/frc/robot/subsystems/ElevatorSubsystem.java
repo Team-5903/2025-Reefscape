@@ -51,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         .forwardSoftLimit(Constants.ElevatorConstants.FORWARD_LIMIT)
         .forwardSoftLimitEnabled(true);
     configLeft.closedLoop
-      .outputRange(-0.1, 0.4)
+      .outputRange(-0.3, 0.6)
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(Constants.ElevatorConstants.PID_P);
     configLeft.encoder.positionConversionFactor(Constants.ElevatorConstants.CONVERSION_RATIO);

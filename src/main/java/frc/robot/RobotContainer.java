@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import java.util.List;
@@ -51,6 +52,7 @@ public class RobotContainer
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+  private final IntakeSubsystem intake = new IntakeSubsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
 
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -154,7 +156,7 @@ public class RobotContainer
   
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
-    elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
+    // elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
 
     driverXbox
       .rightBumper()
@@ -187,13 +189,31 @@ public class RobotContainer
       .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 0.0)));
 
     driverXbox
+      .a()
+      .onTrue(intake.RunAtVelocity(1))
+      .onFalse(intake.Stop());
+
+
+    driverXbox
       .povDown()
       .onTrue(
         climber
           .DropCoralChute()
-          .andThen(new WaitCommand(3))
           .andThen(climber.RaiseArm())
       );
+
+    driverXbox
+      .povUp()
+      .onTrue(
+        climber
+          .LowerArm()
+          .andThen(climber.RaiseCoralChute())
+      );
+
+    driverXbox
+      .povLeft()
+      .and(climber.isChuteOpen())
+      .onTrue(climber.ClimbArm());
 
 
     // if (Robot.isSimulation())
@@ -208,7 +228,7 @@ public class RobotContainer
 
     //   driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     //   driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
-    //   driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
     //   driverXbox.back().whileTrue(drivebase.centerModulesCommand());
     //   driverXbox.leftBumper().onTrue(Commands.none());
     //   driverXbox.rightBumper().onTrue(Commands.none());

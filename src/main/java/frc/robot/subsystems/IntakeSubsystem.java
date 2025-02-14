@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -30,7 +31,8 @@ public class IntakeSubsystem extends SubsystemBase {
     configLeft
         .smartCurrentLimit(50)
         .idleMode(IdleMode.kCoast)
-        .closedLoop.velocityFF(Constants.IntakeConstants.INTAKE_FEED_FORWARD);
+        .closedLoop.velocityFF(Constants.IntakeConstants.INTAKE_FEED_FORWARD)
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     configLeft
         .encoder.velocityConversionFactor(Constants.IntakeConstants.INTAKE_CONVERSION_FACTOR);
@@ -55,8 +57,16 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command RunAtVelocity(double velocity)
   {
     return new InstantCommand(() -> {
-      intakeMotorLeft.getClosedLoopController().setReference(velocity, ControlType.kMAXMotionVelocityControl);
-      intakeMotorRight.getClosedLoopController().setReference(velocity, ControlType.kMAXMotionVelocityControl);
+      intakeMotorLeft.getClosedLoopController().setReference(velocity, ControlType.kVelocity);
+      intakeMotorRight.getClosedLoopController().setReference(velocity, ControlType.kVelocity);
+    });
+  }
+
+  public Command Stop()
+  {
+    return new InstantCommand(() -> {
+      intakeMotorLeft.stopMotor();
+      intakeMotorRight.stopMotor();
     });
   }
 }
