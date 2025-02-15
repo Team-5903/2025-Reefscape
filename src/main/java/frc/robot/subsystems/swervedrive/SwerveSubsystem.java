@@ -179,11 +179,11 @@ public class SwerveSubsystem extends SubsystemBase
     Logger.recordOutput("Drive/desiredChassisSpeeds", SwerveDriveTelemetry.desiredChassisSpeeds);
 
 
-    // for(SwerveModule module : swerveDrive.swerveDriveConfiguration.modules)
-    // {
-    //   Util.LogSpark("Drive/module" + module.moduleNumber + "/angle", (SparkMax)module.getAngleMotor().getMotor());
-    //   Util.LogSpark("Drive/module" + module.moduleNumber + "/drive", (SparkFlex)module.getDriveMotor().getMotor());
-    // }
+    for(SwerveModule module : swerveDrive.swerveDriveConfiguration.modules)
+    {
+      Util.LogSpark("Drive/module" + module.moduleNumber + "/angle", (SparkMax)module.getAngleMotor().getMotor());
+      Util.LogSpark("Drive/module" + module.moduleNumber + "/drive", (SparkFlex)module.getDriveMotor().getMotor());
+    }
   }
 
   @Override

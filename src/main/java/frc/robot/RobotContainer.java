@@ -215,6 +215,22 @@ public class RobotContainer
       .and(climber.isChuteOpen())
       .onTrue(climber.ClimbArm());
 
+    driverXbox
+      .leftStick()
+      .onTrue(new InstantCommand(() -> {
+        driveAngularVelocity
+          .scaleTranslation(0.4)
+          .scaleRotation(0.4);
+      }));
+
+    driverXbox
+      .rightStick()
+      .onTrue(new InstantCommand(() -> {
+        driveAngularVelocity
+          .scaleTranslation(0.8)
+          .scaleRotation(0.8);
+      }));
+
 
     // if (Robot.isSimulation())
     // {
@@ -266,6 +282,6 @@ public class RobotContainer
   }
 
   public List<SubsystemBase> getSubsystems(){
-    return List.of(drivebase);
+    return List.of(drivebase, elevator, climber, intake);
   }
 }
