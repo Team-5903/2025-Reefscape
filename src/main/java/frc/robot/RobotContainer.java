@@ -163,7 +163,7 @@ public class RobotContainer
       .and(() -> !elevator.isAtTop().getAsBoolean())
       .whileTrue(
         elevator.IncreaseHeightSetpoint()
-        .andThen(new WaitCommand(0.5))
+        .andThen(new WaitCommand(0.25))
         .repeatedly()
       );
 
@@ -178,7 +178,7 @@ public class RobotContainer
       .and(() -> !elevator.isAtBottom().getAsBoolean())
       .whileTrue(
         elevator.DecreaseHeightSetpoint()
-        .andThen(new WaitCommand(0.5))
+        .andThen(new WaitCommand(0.25))
         .repeatedly()
       );
 
@@ -191,6 +191,11 @@ public class RobotContainer
     driverXbox
       .a()
       .onTrue(intake.RunAtVelocity(1))
+      .onFalse(intake.Stop());
+
+    driverXbox
+      .y()
+      .onTrue(intake.RunAtVelocity(-1))
       .onFalse(intake.Stop());
 
 

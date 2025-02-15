@@ -45,7 +45,7 @@ public final class Constants
      public static final int LIFT_MOTOR_LEFT = 9;
      public static final int LIFT_MOTOR_RIGHT = 10;
 
-    public static final double FORWARD_LIMIT = 124.5;
+    public static final double FORWARD_LIMIT = 135.5;
 
     public static final double SPOOL_DIAMETER = Units.inchesToMeters(1.0);
     public static final double GEARBOX_RATIO = 15.0;
@@ -54,12 +54,16 @@ public final class Constants
     public static final double INTAKE_HEIGHT = 0.0;
     public static final double L1_HEIGHT = 10.0;
     public static final double L2_HEIGHT = 30.0;
-    public static final double L3_HEIGHT = 67.0;
-    public static final double L4_HEIGHT = 119.0;
+    public static final double L3_HEIGHT = 63.0;
+    public static final double L4_HEIGHT = 130.0;
     
     public static final double SETPOINT_TOLERANCE = 1.0;
     public static final double FEED_FORWARD = 0.02;
     public static final double PID_P = 0.3;
+
+    public static final double DOWN_FAST = -0.8;
+    public static final double DOWN_SLOW = -0.8;
+
   }
   public static final class IntakeConstants
   { 
@@ -69,6 +73,7 @@ public final class Constants
     public static final double INTAKE_FEED_FORWARD = 0.34;
     public static final int CORAL_BEAM_BREAK_CHANNEL = 0;
     public static final double INTAKE_CONVERSION_FACTOR = ((1.0/20.0) * (Units.inchesToMeters(4) * Math.PI)) / 60.0;
+    public static final double CORAL_BEAM_BREAK_VOLTAGE_THRESHOLD = 1.0;
   }
 
   public static class OperatorConstants
@@ -92,7 +97,7 @@ public final class Constants
     public static final double FORWARD_LIMIT = 180;
     public static final int LINEAR_ACTUATOR_LEFT = 0;
     public static final int LINEAR_ACTUATOR_RIGHT = 1;
-    public static final int CLIMB_POSITION = 25;
+    public static final int CLIMB_POSITION = 50;
     public static final double PID_P = 0.3;
   }
 }

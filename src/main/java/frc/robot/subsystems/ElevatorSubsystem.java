@@ -51,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         .forwardSoftLimit(Constants.ElevatorConstants.FORWARD_LIMIT)
         .forwardSoftLimitEnabled(true);
     configLeft.closedLoop
-      .outputRange(-0.3, 0.6)
+      .outputRange(-0.4, 1)
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(Constants.ElevatorConstants.PID_P);
     configLeft.encoder.positionConversionFactor(Constants.ElevatorConstants.CONVERSION_RATIO);
@@ -67,6 +67,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     // Persist parameters to retain configuration in the event of a power cycle
     liftMotorLeft.configure(configLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     liftMotorRight.configure(configRight, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    liftMotorLeft.getEncoder().setPosition(0);
   }
 
   @Override
@@ -75,6 +77,31 @@ public class ElevatorSubsystem extends SubsystemBase {
     Util.LogSpark("Elevator/RightLiftMotor", liftMotorRight);
     
     Logger.recordOutput("Elevator/SetpointPosition", getSetpointPosition().name());
+
+    if(liftMotorLeft.getEncoder().getPosition() > ElevatorPosition.L2.height && 
+      liftMotorLeft.configAccessor.closedLoop.getMinOutput() == Constants.ElevatorConstants.DOWN_SLOW)
+    {
+      
+      SparkMaxConfig config = new SparkMaxConfig();
+      config
+        .closedLoop.minOutput(Constants.ElevatorConstants.DOWN_FAST);
+
+      liftMotorLeft.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      liftMotorRight.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
+    if(liftMotorLeft.getEncoder().getPosition() <= ElevatorPosition.L2.height && 
+      liftMotorLeft.configAccessor.closedLoop.getMinOutput() == Constants.ElevatorConstants.DOWN_FAST)
+    {
+      
+      SparkMaxConfig config = new SparkMaxConfig();
+      config
+        .closedLoop.minOutput(Constants.ElevatorConstants.DOWN_SLOW);
+
+      liftMotorLeft.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      liftMotorRight.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
   }
 
   public ElevatorPosition getSetpointPosition() {

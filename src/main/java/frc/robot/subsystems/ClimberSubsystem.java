@@ -48,7 +48,7 @@ public class ClimberSubsystem extends SubsystemBase {
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(Constants.ClimberConstants.PID_P);
 
-    climberMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    climberMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   @Override

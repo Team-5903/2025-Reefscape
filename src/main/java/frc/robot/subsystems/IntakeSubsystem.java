@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -52,6 +54,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     Util.LogSpark("Intake/MotorLeft", intakeMotorLeft);
     Util.LogSpark("Intake/MotorRight", intakeMotorRight);
+    Logger.recordOutput("Intake/IsCoralPresent", IsCoralPresent());
+    Logger.recordOutput("Intake/CoralBeamBreakValue", coralBeamBreak.getAverageVoltage());
   }
 
   public Command RunAtVelocity(double velocity)
@@ -68,5 +72,10 @@ public class IntakeSubsystem extends SubsystemBase {
       intakeMotorLeft.stopMotor();
       intakeMotorRight.stopMotor();
     });
+  }
+
+  public boolean IsCoralPresent()
+  {
+    return coralBeamBreak.getAverageVoltage() > Constants.IntakeConstants.CORAL_BEAM_BREAK_VOLTAGE_THRESHOLD;
   }
 }
