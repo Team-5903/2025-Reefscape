@@ -63,6 +63,7 @@ public final class Constants
 
     public static final double DOWN_FAST = -0.8;
     public static final double DOWN_SLOW = -0.4;
+    public static final double DOWN_HYSTERESIS = 1.0;
 
   }
   public static final class IntakeConstants
@@ -74,6 +75,7 @@ public final class Constants
     public static final int CORAL_BEAM_BREAK_CHANNEL = 0;
     public static final double INTAKE_CONVERSION_FACTOR = ((1.0/20.0) * (Units.inchesToMeters(4) * Math.PI)) / 60.0;
     public static final double CORAL_BEAM_BREAK_VOLTAGE_THRESHOLD = 1.0;
+    public static final double MAX_SPEED = 2.0;
   }
 
   public static class OperatorConstants
@@ -94,10 +96,10 @@ public final class Constants
   public static final class ClimberConstants 
   {
     public static final int CLIMBER_MOTOR = 13;
-    public static final double FORWARD_LIMIT = 180;
+    public static final double FORWARD_LIMIT = 190;
     public static final int LINEAR_ACTUATOR_LEFT = 0;
     public static final int LINEAR_ACTUATOR_RIGHT = 1;
-    public static final int CLIMB_POSITION = 50;
+    public static final int CLIMB_POSITION = 60;
     public static final double PID_P = 0.3;
   }
 }

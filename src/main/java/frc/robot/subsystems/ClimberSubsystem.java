@@ -64,7 +64,7 @@ public class ClimberSubsystem extends SubsystemBase {
       linearActuatorLeft.setSpeed(-1);
       linearActuatorRight.setSpeed(-1);
     })
-    .andThen(new WaitCommand(5))
+    .andThen(new WaitCommand(2.5))
     .andThen(
       new InstantCommand(() -> {
         chuteOpen = true;
@@ -79,7 +79,7 @@ public class ClimberSubsystem extends SubsystemBase {
       linearActuatorLeft.setSpeed(1);
       linearActuatorRight.setSpeed(1);
     })
-    .andThen(new WaitCommand(5));
+    .andThen(new WaitCommand(2.5));
   }
 
   public Command RaiseArm()

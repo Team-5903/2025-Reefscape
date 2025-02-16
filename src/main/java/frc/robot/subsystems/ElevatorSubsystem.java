@@ -78,8 +78,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     Logger.recordOutput("Elevator/SetpointPosition", getSetpointPosition().name());
 
-    if(liftMotorLeft.getEncoder().getPosition() > ElevatorPosition.L2.height && 
-      liftMotorLeft.configAccessor.closedLoop.getMinOutput() == Constants.ElevatorConstants.DOWN_SLOW)
+    double position = liftMotorLeft.getEncoder().getPosition();
+    double minOutput = liftMotorLeft.configAccessor.closedLoop.getMinOutput();
+
+    if(position > ElevatorPosition.L2.height + Constants.ElevatorConstants.DOWN_HYSTERESIS && 
+      Math.abs(minOutput - Constants.ElevatorConstants.DOWN_SLOW) < 0.001)
     {
       
       SparkMaxConfig config = new SparkMaxConfig();
@@ -90,8 +93,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       liftMotorRight.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    if(liftMotorLeft.getEncoder().getPosition() <= ElevatorPosition.L2.height && 
-      liftMotorLeft.configAccessor.closedLoop.getMinOutput() == Constants.ElevatorConstants.DOWN_FAST)
+    if(position <= ElevatorPosition.L2.height - Constants.ElevatorConstants.DOWN_HYSTERESIS && 
+      Math.abs(minOutput - Constants.ElevatorConstants.DOWN_FAST) < 0.001)
     {
       
       SparkMaxConfig config = new SparkMaxConfig();

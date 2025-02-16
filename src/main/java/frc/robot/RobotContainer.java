@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -198,11 +200,12 @@ public class RobotContainer
       .and(() -> !intake.IsCoralPresent())
       .and(() -> elevator.getSetpointPosition() == ElevatorSubsystem.ElevatorPosition.INTAKE)
       .onTrue(intake.RunAtVelocity(1)
-        .until(() -> intake.IsCoralPresent())
+        .andThen(new WaitUntilCommand(() -> intake.IsCoralPresent()))
         .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 1.0)))
+        .andThen(new WaitCommand(0.15))
+        .andThen(intake.Stop())
         .andThen(new WaitCommand(0.25))
         .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 0.0)))
-        .andThen(intake.Stop())
       );
 
       
@@ -210,6 +213,16 @@ public class RobotContainer
       .a()
       .and(() -> elevator.getSetpointPosition() != ElevatorSubsystem.ElevatorPosition.INTAKE)
       .onTrue(intake.RunAtVelocity(1))
+      .onFalse(intake.Stop());
+    
+    driverXbox
+      .leftTrigger(0.2)
+      .whileTrue(new RunCommand(() -> intake.RunAtVelocityRaw(-driverXbox.getLeftTriggerAxis() * Constants.IntakeConstants.MAX_SPEED), intake))
+      .onFalse(intake.Stop());
+      
+    driverXbox
+      .rightTrigger(0.2)
+      .whileTrue(new RunCommand(() -> intake.RunAtVelocityRaw(driverXbox.getRightTriggerAxis() * Constants.IntakeConstants.MAX_SPEED), intake))
       .onFalse(intake.Stop());
 
     driverXbox

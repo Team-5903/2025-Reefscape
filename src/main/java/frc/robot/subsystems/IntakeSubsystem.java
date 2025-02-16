@@ -61,9 +61,14 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command RunAtVelocity(double velocity)
   {
     return new InstantCommand(() -> {
-      intakeMotorLeft.getClosedLoopController().setReference(velocity, ControlType.kVelocity);
-      intakeMotorRight.getClosedLoopController().setReference(velocity, ControlType.kVelocity);
+      this.RunAtVelocityRaw(velocity);
     });
+  }
+
+  public void RunAtVelocityRaw(double velocity)
+  {
+    intakeMotorLeft.getClosedLoopController().setReference(velocity, ControlType.kVelocity);
+    intakeMotorRight.getClosedLoopController().setReference(velocity, ControlType.kVelocity);
   }
 
   public Command Stop()
