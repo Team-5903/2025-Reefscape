@@ -62,7 +62,7 @@ public final class Constants
     public static final double PID_P = 0.3;
 
     public static final double DOWN_FAST = -0.8;
-    public static final double DOWN_SLOW = -0.8;
+    public static final double DOWN_SLOW = -0.4;
 
   }
   public static final class IntakeConstants

@@ -146,6 +146,7 @@ public class Vision
     for (Cameras camera : Cameras.values())
     {
       Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
+      Logger.recordOutput("Vision/" + camera.name() + "/CameraLocation", new Pose3d(Robot.isSimulation() ? swerveDrive.getSimulationDriveTrainPose().get() : swerveDrive.getPose()).plus(camera.robotToCamTransform));
       if (poseEst.isPresent())
       {
         var pose = poseEst.get();
@@ -163,6 +164,7 @@ public class Vision
         Logger.recordOutput("Vision/" + camera.name() + "/Timestamp", -1.0);
         Logger.recordOutput("Vision/" + camera.name() + "/StdDevs", new Matrix<N3, N1>(new SimpleMatrix(1, 1)));
       }
+
     }
 
   }
@@ -320,23 +322,23 @@ public class Vision
     List<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
     for (Cameras c : Cameras.values())
     {
-      List<Pose2d> poses = new ArrayList<>();
+      List<Pose3d> poses = new ArrayList<>();
       if (!c.resultsList.isEmpty())
       {
         if (c.resultsList.get(0).hasTargets())
         {
-          for (PhotonTrackedTarget target : targets)
+          for (PhotonTrackedTarget target : c.resultsList.get(0).getTargets())
           {
             if (fieldLayout.getTagPose(target.getFiducialId()).isPresent())
             {
-              poses.add(fieldLayout.getTagPose(target.getFiducialId()).get().toPose2d());
+              poses.add(fieldLayout.getTagPose(target.getFiducialId()).get());
             }
           }
           
         }
       }
       
-      Logger.recordOutput("Vision/" + c.name() + "/Targets", poses.toArray(Pose2d[]::new));
+      Logger.recordOutput("Vision/" + c.name() + "/Targets", poses.toArray(Pose3d[]::new));
     }
   }
 
@@ -349,29 +351,29 @@ public class Vision
      * Left Camera
      */
     LEFT_CAM("left",
-             new Rotation3d(0, Math.toRadians(-24.094), Math.toRadians(30)),
-             new Translation3d(Units.inchesToMeters(12.056),
-                               Units.inchesToMeters(10.981),
-                               Units.inchesToMeters(8.44)),
+             new Rotation3d(0, Math.toRadians(-30), Math.toRadians(90)),
+             new Translation3d(Units.inchesToMeters(3.812),
+                               Units.inchesToMeters(8.729),
+                               Units.inchesToMeters(8.747)),
              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     /**
      * Right Camera
      */
     RIGHT_CAM("right",
-              new Rotation3d(0, Math.toRadians(-24.094), Math.toRadians(-30)),
-              new Translation3d(Units.inchesToMeters(12.056),
-                                Units.inchesToMeters(-10.981),
-                                Units.inchesToMeters(8.44)),
-              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(-90)),
+              new Translation3d(Units.inchesToMeters(3.812),
+                                Units.inchesToMeters(-8.729),
+                                Units.inchesToMeters(8.747)),
+              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
     /**
      * Center Camera
      */
-    CENTER_CAM("center",
-               new Rotation3d(0, Units.degreesToRadians(18), 0),
-               new Translation3d(Units.inchesToMeters(-4.628),
-                                 Units.inchesToMeters(-10.687),
-                                 Units.inchesToMeters(16.129)),
-               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+    // CENTER_CAM("center",
+    //            new Rotation3d(0, Units.degreesToRadians(18), 0),
+    //            new Translation3d(Units.inchesToMeters(-4.628),
+    //                              Units.inchesToMeters(-10.687),
+    //                              Units.inchesToMeters(16.129)),
+    //            VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
                
     /**
      * Latency alert to use when high latency is detected.

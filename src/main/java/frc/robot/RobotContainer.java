@@ -188,8 +188,27 @@ public class RobotContainer
       .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 1.0)))
       .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 0.0)));
 
+    // driverXbox
+    //   .a()
+    //   .onTrue(intake.RunAtVelocity(1))
+    //   .onFalse(intake.Stop());
+
     driverXbox
       .a()
+      .and(() -> !intake.IsCoralPresent())
+      .and(() -> elevator.getSetpointPosition() == ElevatorSubsystem.ElevatorPosition.INTAKE)
+      .onTrue(intake.RunAtVelocity(1)
+        .until(() -> intake.IsCoralPresent())
+        .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 1.0)))
+        .andThen(new WaitCommand(0.25))
+        .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 0.0)))
+        .andThen(intake.Stop())
+      );
+
+      
+    driverXbox
+      .a()
+      .and(() -> elevator.getSetpointPosition() != ElevatorSubsystem.ElevatorPosition.INTAKE)
       .onTrue(intake.RunAtVelocity(1))
       .onFalse(intake.Stop());
 

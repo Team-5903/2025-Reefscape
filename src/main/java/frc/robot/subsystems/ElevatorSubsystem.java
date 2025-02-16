@@ -51,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         .forwardSoftLimit(Constants.ElevatorConstants.FORWARD_LIMIT)
         .forwardSoftLimitEnabled(true);
     configLeft.closedLoop
-      .outputRange(-0.4, 1)
+      .outputRange(Constants.ElevatorConstants.DOWN_SLOW, 1)
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(Constants.ElevatorConstants.PID_P);
     configLeft.encoder.positionConversionFactor(Constants.ElevatorConstants.CONVERSION_RATIO);
@@ -155,7 +155,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }, this);
   }
 
-  enum ElevatorPosition {
+  public enum ElevatorPosition {
 
     INTAKE(Constants.ElevatorConstants.INTAKE_HEIGHT, Optional.empty()),
     L1(Constants.ElevatorConstants.L1_HEIGHT, Optional.of(INTAKE)),
