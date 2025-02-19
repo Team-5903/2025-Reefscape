@@ -116,6 +116,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     liftMotorLeft.getClosedLoopController().setReference(currentPosition.height, ControlType.kPosition, ClosedLoopSlot.kSlot0, Constants.ElevatorConstants.FEED_FORWARD * Volts.of(12).magnitude());
   }
 
+  public Command setSetpointPositionCommand(ElevatorPosition currentPosition) {
+    return new InstantCommand(() -> setSetpointPosition(currentPosition));
+  }
+
   public Command IncreaseHeightSetpoint()
   {
     return new InstantCommand(() -> {

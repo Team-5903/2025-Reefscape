@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Util.Util;
 
@@ -29,6 +30,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private final SparkMax climberMotor = new SparkMax(Constants.ClimberConstants.CLIMBER_MOTOR, MotorType.kBrushless);
   private final PWM linearActuatorLeft = new PWM(Constants.ClimberConstants.LINEAR_ACTUATOR_LEFT);
   private final PWM linearActuatorRight = new PWM(Constants.ClimberConstants.LINEAR_ACTUATOR_RIGHT);
+  private double setPoint = 0.0;
   private boolean chuteOpen = false;
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
@@ -56,6 +58,7 @@ public class ClimberSubsystem extends SubsystemBase {
     Util.LogSpark("Climber/Motor", climberMotor);
     Logger.recordOutput("Climber/actuatorLeftSet", linearActuatorLeft.getSpeed());
     Logger.recordOutput("Climber/actuatorRightSet", linearActuatorRight.getSpeed());
+    Logger.recordOutput("Climber/ArmSetpoint", setPoint);
   }
 
   public Command DropCoralChute ()
@@ -85,29 +88,37 @@ public class ClimberSubsystem extends SubsystemBase {
   public Command RaiseArm()
   {
     return runOnce(() -> {
+      setPoint = Constants.ClimberConstants.FORWARD_LIMIT;
       climberMotor.getClosedLoopController().setReference(Constants.ClimberConstants.FORWARD_LIMIT, ControlType.kPosition);
     })
-    .andThen(new WaitCommand(5));//TODO: replace with setpoint checking
+    .andThen(new WaitUntilCommand(isArmAtSetpoint()));//TODO: replace with setpoint checking
   }
 
   public Command LowerArm()
   {
     return runOnce(() -> {
+      setPoint = 0;
       climberMotor.getClosedLoopController().setReference(0, ControlType.kPosition);
     })
-    .andThen(new WaitCommand(5));//TODO: replace with setpoint checking
+    .andThen(new WaitUntilCommand(isArmAtSetpoint()));//TODO: replace with setpoint checking
   }
 
   public Command ClimbArm()
   {
     return runOnce(() -> {
+      setPoint = Constants.ClimberConstants.CLIMB_POSITION;
       climberMotor.getClosedLoopController().setReference(Constants.ClimberConstants.CLIMB_POSITION, ControlType.kPosition);
     })
-    .andThen(new WaitCommand(5));//TODO: replace with setpoint checking
+    .andThen(new WaitUntilCommand(isArmAtSetpoint()));//TODO: replace with setpoint checking
   }
 
   public BooleanSupplier isChuteOpen()
   {
     return () -> chuteOpen;
+  }
+
+  public BooleanSupplier isArmAtSetpoint()
+  {
+    return () -> Math.abs(climberMotor.getEncoder().getPosition() - setPoint) < Constants.ClimberConstants.ARM_SETPOINT_TOLERANCE;
   }
 }

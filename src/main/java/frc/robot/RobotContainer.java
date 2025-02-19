@@ -24,9 +24,11 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoIntakeCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import java.util.List;
@@ -117,6 +119,14 @@ public class RobotContainer
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     registerAndNameCommand("test", Commands.print("I EXIST"));
+    registerAndNameCommand("AutoIntake", new AutoIntakeCommand(intake));
+    registerAndNameCommand("IntakeManual", intake.RunAtVelocity(1));
+    registerAndNameCommand("IntakeStop", intake.Stop());
+    registerAndNameCommand("ElevatorIntake", elevator.setSetpointPositionCommand(ElevatorPosition.INTAKE));
+    registerAndNameCommand("ElevatorL1", elevator.setSetpointPositionCommand(ElevatorPosition.L1));
+    registerAndNameCommand("ElevatorL2", elevator.setSetpointPositionCommand(ElevatorPosition.L2));
+    registerAndNameCommand("ElevatorL3", elevator.setSetpointPositionCommand(ElevatorPosition.L3));
+    registerAndNameCommand("ElevatorL4", elevator.setSetpointPositionCommand(ElevatorPosition.L4));
     
     LoggedPowerDistribution.getInstance(Constants.PDH_ID, ModuleType.kRev);
     autoChooser = new LoggedDashboardChooser<>("Auto Routine", AutoBuilder.buildAutoChooser());
@@ -199,11 +209,8 @@ public class RobotContainer
       .a()
       .and(() -> !intake.IsCoralPresent())
       .and(() -> elevator.getSetpointPosition() == ElevatorSubsystem.ElevatorPosition.INTAKE)
-      .onTrue(intake.RunAtVelocity(1)
-        .andThen(new WaitUntilCommand(() -> intake.IsCoralPresent()))
+      .onTrue(new AutoIntakeCommand(intake)
         .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 1.0)))
-        .andThen(new WaitCommand(0.15))
-        .andThen(intake.Stop())
         .andThen(new WaitCommand(0.25))
         .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 0.0)))
       );
@@ -233,6 +240,7 @@ public class RobotContainer
 
     driverXbox
       .povDown()
+      .or(driverXbox.x())
       .onTrue(
         climber
           .DropCoralChute()
@@ -249,6 +257,7 @@ public class RobotContainer
 
     driverXbox
       .povLeft()
+      .or(driverXbox.b())
       .and(climber.isChuteOpen())
       .onTrue(climber.ClimbArm());
 
