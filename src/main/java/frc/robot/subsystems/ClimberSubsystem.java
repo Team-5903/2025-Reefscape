@@ -67,7 +67,7 @@ public class ClimberSubsystem extends SubsystemBase {
       linearActuatorLeft.setSpeed(-1);
       linearActuatorRight.setSpeed(-1);
     })
-    .andThen(new WaitCommand(2.5))
+    .andThen(new WaitCommand(5))
     .andThen(
       new InstantCommand(() -> {
         chuteOpen = true;
@@ -82,7 +82,7 @@ public class ClimberSubsystem extends SubsystemBase {
       linearActuatorLeft.setSpeed(1);
       linearActuatorRight.setSpeed(1);
     })
-    .andThen(new WaitCommand(2.5));
+    .andThen(new WaitCommand(5));
   }
 
   public Command RaiseArm()
@@ -91,7 +91,7 @@ public class ClimberSubsystem extends SubsystemBase {
       setPoint = Constants.ClimberConstants.FORWARD_LIMIT;
       climberMotor.getClosedLoopController().setReference(Constants.ClimberConstants.FORWARD_LIMIT, ControlType.kPosition);
     })
-    .andThen(new WaitUntilCommand(isArmAtSetpoint()));//TODO: replace with setpoint checking
+    .andThen(new WaitUntilCommand(isArmAtSetpoint()));
   }
 
   public Command LowerArm()
@@ -100,7 +100,7 @@ public class ClimberSubsystem extends SubsystemBase {
       setPoint = 0;
       climberMotor.getClosedLoopController().setReference(0, ControlType.kPosition);
     })
-    .andThen(new WaitUntilCommand(isArmAtSetpoint()));//TODO: replace with setpoint checking
+    .andThen(new WaitUntilCommand(isArmAtSetpoint()));
   }
 
   public Command ClimbArm()
@@ -109,7 +109,7 @@ public class ClimberSubsystem extends SubsystemBase {
       setPoint = Constants.ClimberConstants.CLIMB_POSITION;
       climberMotor.getClosedLoopController().setReference(Constants.ClimberConstants.CLIMB_POSITION, ControlType.kPosition);
     })
-    .andThen(new WaitUntilCommand(isArmAtSetpoint()));//TODO: replace with setpoint checking
+    .andThen(new WaitUntilCommand(isArmAtSetpoint()));
   }
 
   public BooleanSupplier isChuteOpen()

@@ -350,7 +350,7 @@ public class Vision
     /**
      * Left Camera
      */
-    LEFT_CAM("left",
+    LEFT_CAM("LeftCamera",
              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(90)),
              new Translation3d(Units.inchesToMeters(3.812),
                                Units.inchesToMeters(8.729),
@@ -359,21 +359,21 @@ public class Vision
     /**
      * Right Camera
      */
-    RIGHT_CAM("right",
+    RIGHT_CAM("RightCamera",
               new Rotation3d(0, Math.toRadians(-30), Math.toRadians(-90)),
               new Translation3d(Units.inchesToMeters(3.812),
                                 Units.inchesToMeters(-8.729),
                                 Units.inchesToMeters(8.747)),
-              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     /**
      * Center Camera
      */
-    // CENTER_CAM("center",
-    //            new Rotation3d(0, Units.degreesToRadians(18), 0),
-    //            new Translation3d(Units.inchesToMeters(-4.628),
-    //                              Units.inchesToMeters(-10.687),
-    //                              Units.inchesToMeters(16.129)),
-    //            VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+    CENTER_CAM("FrontCamera",
+               new Rotation3d(0, Units.degreesToRadians(0), 0),
+               new Translation3d(Units.inchesToMeters(14.75),
+                                 Units.inchesToMeters(-1.25),
+                                 Units.inchesToMeters(17.75)),
+               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
                
     /**
      * Latency alert to use when high latency is detected.
@@ -534,18 +534,18 @@ public class Vision
      */
     private void updateUnreadResults()
     {
-      double mostRecentTimestamp = resultsList.isEmpty() ? 0.0 : resultsList.get(0).getTimestampSeconds();
-      double currentTimestamp    = Microseconds.of(NetworkTablesJNI.now()).in(Seconds);
-      double debounceTime        = Milliseconds.of(15).in(Seconds);
-      for (PhotonPipelineResult result : resultsList)
-      {
-        mostRecentTimestamp = Math.max(mostRecentTimestamp, result.getTimestampSeconds());
-      }
-      if ((resultsList.isEmpty() || (currentTimestamp - mostRecentTimestamp >= debounceTime)) &&
-          (currentTimestamp - lastReadTimestamp) >= debounceTime)
-      {
+      // double mostRecentTimestamp = resultsList.isEmpty() ? 0.0 : resultsList.get(0).getTimestampSeconds();
+      // double currentTimestamp    = Microseconds.of(NetworkTablesJNI.now()).in(Seconds);
+      // double debounceTime        = Milliseconds.of(15).in(Seconds);
+      // for (PhotonPipelineResult result : resultsList)
+      // {
+      //   mostRecentTimestamp = Math.max(mostRecentTimestamp, result.getTimestampSeconds());
+      // }
+      // if ((resultsList.isEmpty() || (currentTimestamp - mostRecentTimestamp >= debounceTime)) &&
+      //     (currentTimestamp - lastReadTimestamp) >= debounceTime)
+      // {
         resultsList = Robot.isReal() ? camera.getAllUnreadResults() : cameraSim.getCamera().getAllUnreadResults();
-        lastReadTimestamp = currentTimestamp;
+        // lastReadTimestamp = currentTimestamp;
         resultsList.sort((PhotonPipelineResult a, PhotonPipelineResult b) -> {
           return a.getTimestampSeconds() >= b.getTimestampSeconds() ? 1 : -1;
         });
@@ -553,7 +553,7 @@ public class Vision
         {
           updateEstimatedGlobalPose();
         }
-      }
+      // }
     }
 
     /**

@@ -96,10 +96,10 @@ public final class Constants
   public static final class ClimberConstants 
   {
     public static final int CLIMBER_MOTOR = 13;
-    public static final double FORWARD_LIMIT = 190;
+    public static final double FORWARD_LIMIT = 210;
     public static final int LINEAR_ACTUATOR_LEFT = 0;
     public static final int LINEAR_ACTUATOR_RIGHT = 1;
-    public static final int CLIMB_POSITION = 60;
+    public static final int CLIMB_POSITION = 50;
     public static final double PID_P = 0.3;
     public static final double ARM_SETPOINT_TOLERANCE = 5;
   }
