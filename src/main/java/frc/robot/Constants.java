@@ -72,7 +72,8 @@ public final class Constants
      public static final int INTAKE_MOTOR_RIGHT = 12;
 
     public static final double INTAKE_FEED_FORWARD = 0.34;
-    public static final int CORAL_BEAM_BREAK_CHANNEL = 0;
+    public static final int CORAL_STAGING_BEAM_BREAK_CHANNEL = 0;
+    public static final int CORAL_BEAM_BREAK_CHANNEL = 1;
     public static final double INTAKE_CONVERSION_FACTOR = ((1.0/20.0) * (Units.inchesToMeters(4) * Math.PI)) / 60.0;
     public static final double CORAL_BEAM_BREAK_VOLTAGE_THRESHOLD = 1.0;
     public static final double MAX_SPEED = 2.0;

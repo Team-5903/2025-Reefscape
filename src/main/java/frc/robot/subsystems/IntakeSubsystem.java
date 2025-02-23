@@ -19,12 +19,14 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Util.Util;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax intakeMotorLeft = new SparkMax(Constants.IntakeConstants.INTAKE_MOTOR_LEFT, MotorType.kBrushless);
   private final SparkMax intakeMotorRight = new SparkMax(Constants.IntakeConstants.INTAKE_MOTOR_RIGHT, MotorType.kBrushless);
+  private final AnalogInput coralStagingBeamBreak = new AnalogInput(Constants.IntakeConstants.CORAL_STAGING_BEAM_BREAK_CHANNEL);
   private final AnalogInput coralBeamBreak = new AnalogInput(Constants.IntakeConstants.CORAL_BEAM_BREAK_CHANNEL);
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -46,6 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotorLeft.configure(configLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intakeMotorRight.configure(configRight, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
+    coralStagingBeamBreak.setAverageBits(24);
     coralBeamBreak.setAverageBits(24);
     AnalogInput.setGlobalSampleRate(1500);
   }
@@ -54,6 +57,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     Util.LogSpark("Intake/MotorLeft", intakeMotorLeft);
     Util.LogSpark("Intake/MotorRight", intakeMotorRight);
+    Logger.recordOutput("Intake/IsCoralStaged", IsCoralStaged());
+    Logger.recordOutput("Intake/CoralStagedBeamBreakValue", coralStagingBeamBreak.getAverageVoltage());
     Logger.recordOutput("Intake/IsCoralPresent", IsCoralPresent());
     Logger.recordOutput("Intake/CoralBeamBreakValue", coralBeamBreak.getAverageVoltage());
   }
@@ -67,8 +72,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void RunAtVelocityRaw(double velocity)
   {
-    intakeMotorLeft.getClosedLoopController().setReference(velocity, ControlType.kVelocity);
-    intakeMotorRight.getClosedLoopController().setReference(velocity, ControlType.kVelocity);
+    RunAtVelocityRaw(velocity, velocity);
+  }
+
+  public void RunAtVelocityRaw(double leftVelocity, double rightVelocity)
+  {
+    intakeMotorLeft.getClosedLoopController().setReference(leftVelocity, ControlType.kVelocity);
+    intakeMotorRight.getClosedLoopController().setReference(rightVelocity, ControlType.kVelocity);
   }
 
   public Command Stop()
@@ -82,5 +92,20 @@ public class IntakeSubsystem extends SubsystemBase {
   public boolean IsCoralPresent()
   {
     return coralBeamBreak.getAverageVoltage() > Constants.IntakeConstants.CORAL_BEAM_BREAK_VOLTAGE_THRESHOLD;
+  }
+
+  public boolean IsCoralStaged()
+  {
+    return coralStagingBeamBreak.getAverageVoltage() > Constants.IntakeConstants.CORAL_BEAM_BREAK_VOLTAGE_THRESHOLD;
+  }
+
+  public Command OuttakeL1()
+  {
+    return RunAtVelocity(1)
+      .until(() -> !IsCoralStaged())
+      .andThen(new InstantCommand(() -> RunAtVelocityRaw(0.5, 1.5)))
+      // .until(() -> !IsCoralPresent())
+      .andThen(new WaitCommand(2))
+      .andThen(this.Stop());
   }
 }

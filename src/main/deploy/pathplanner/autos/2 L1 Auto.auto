@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start Mid to Back Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorAtSetpoint"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OuttakeL1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Back Right to Feeder 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntake"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

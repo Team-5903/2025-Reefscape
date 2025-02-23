@@ -18,7 +18,7 @@ public class AutoIntakeCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(intake.RunAtVelocity(1));
-    addCommands(new WaitUntilCommand(() -> intake.IsCoralPresent()));
+    addCommands(new WaitUntilCommand(() -> intake.IsCoralStaged()));
     addCommands(new WaitCommand(0.15));
     addCommands(intake.Stop());
   }

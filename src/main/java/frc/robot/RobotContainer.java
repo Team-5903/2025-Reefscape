@@ -127,6 +127,8 @@ public class RobotContainer
     registerAndNameCommand("ElevatorL2", elevator.setSetpointPositionCommand(ElevatorPosition.L2));
     registerAndNameCommand("ElevatorL3", elevator.setSetpointPositionCommand(ElevatorPosition.L3));
     registerAndNameCommand("ElevatorL4", elevator.setSetpointPositionCommand(ElevatorPosition.L4));
+    registerAndNameCommand("ElevatorAtSetpoint", new WaitUntilCommand(elevator.isAtSetpoint()));
+    registerAndNameCommand("OuttakeL1", intake.OuttakeL1());
     
     LoggedPowerDistribution.getInstance(Constants.PDH_ID, ModuleType.kRev);
     autoChooser = new LoggedDashboardChooser<>("Auto Routine", AutoBuilder.buildAutoChooser());
@@ -207,7 +209,7 @@ public class RobotContainer
 
     driverXbox
       .a()
-      .and(() -> !intake.IsCoralPresent())
+      .and(() -> !intake.IsCoralStaged())
       .and(() -> elevator.getSetpointPosition() == ElevatorSubsystem.ElevatorPosition.INTAKE)
       .onTrue(new AutoIntakeCommand(intake)
         .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 1.0)))
@@ -278,6 +280,12 @@ public class RobotContainer
       }));
 
 
+    driverXbox
+      .back()
+      .onTrue(intake.OuttakeL1())
+      .onFalse(
+        intake.Stop()
+      );
     // if (Robot.isSimulation())
     // {
     //   driverXbox.start().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
