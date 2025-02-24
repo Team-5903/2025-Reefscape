@@ -157,7 +157,7 @@ public class SwerveSubsystem extends SubsystemBase
       vision.updateVisionField();
     }
 
-    Logger.recordOutput("Drive/DrivePose", Robot.isSimulation() ? swerveDrive.getSimulationDriveTrainPose().get() : swerveDrive.getPose());
+    Logger.recordOutput("Drive/DrivePose", getPose());
     Logger.recordOutput("Drive/DriveDesiredStates", swerveDrive.getStates());
     Logger.recordOutput("Drive/FieldVelocity", swerveDrive.getFieldVelocity());
     Logger.recordOutput("Drive/RobotVelocity", swerveDrive.getRobotVelocity());
@@ -589,7 +589,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Pose2d getPose()
   {
-    return swerveDrive.getPose();
+    return Robot.isSimulation() ? swerveDrive.getSimulationDriveTrainPose().get() : swerveDrive.getPose();
   }
 
   /**

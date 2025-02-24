@@ -4,9 +4,19 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import com.pathplanner.lib.util.FlippingUtil;
+import com.pathplanner.lib.util.GeometryUtil;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import swervelib.math.Matter;
 
 /**
@@ -92,6 +102,11 @@ public final class Constants
   public static final class FieldConstants 
   {
     public static final Translation2d reefCenter = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
+    public static Distance coralStationAutomationZone = Distance.ofBaseUnits(1.5, edu.wpi.first.units.Units.Meters);
+    private static final Translation2d m_coralStationLeft = new Translation2d(0.962, 7.472);
+    private static final Translation2d m_coralStationRight = new Translation2d(0.819, 0.670);
+    public static final Supplier<Translation2d> coralStationLeft = () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red ? FlippingUtil.flipFieldPosition(m_coralStationLeft) : m_coralStationLeft;
+    public static final Supplier<Translation2d> coralStationRight = () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red ? FlippingUtil.flipFieldPosition(m_coralStationRight) : m_coralStationRight;
   }
 
   public static final class ClimberConstants 

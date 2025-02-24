@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoIntakeCommand;
+import frc.robot.commands.PoseAutomationCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -168,11 +169,29 @@ public class RobotContainer
         driveDirectAngleKeyboard);
 
   
-    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    drivebase.setDefaultCommand(
+      driveFieldOrientedAnglularVelocity
+      // .alongWith(new PoseAutomationCommand(drivebase, intake))
+    );
 
+    new Trigger(() -> //left coral station intake automation
+      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationLeft.get()) > 
+        Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
+      !intake.IsCoralPresent() &&
+      !intake.IsCoralStaged()
+    )
+    .onTrue(new AutoIntakeCommand(intake));
+
+    new Trigger(() -> //right coral station intake automation
+      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationRight.get()) > 
+        Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
+      !intake.IsCoralPresent() &&
+      !intake.IsCoralStaged()
+    )
+    .onTrue(new AutoIntakeCommand(intake));
     // elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
 
-    driverXbox
+    driverXbox//elevator go up
       .rightBumper()
       .and(() -> !elevator.isAtTop().getAsBoolean())
       .whileTrue(
@@ -181,13 +200,13 @@ public class RobotContainer
         .repeatedly()
       );
 
-    driverXbox
+    driverXbox//elevator at top rumble
       .rightBumper()
       .and(elevator.isAtTop())
       .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kRightRumble, 1.0)))
       .onFalse(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kRightRumble, 0.0)));
 
-    driverXbox
+    driverXbox//elevator go down
       .leftBumper()
       .and(() -> !elevator.isAtBottom().getAsBoolean())
       .whileTrue(
@@ -196,7 +215,7 @@ public class RobotContainer
         .repeatedly()
       );
 
-    driverXbox
+    driverXbox//elevator at bottom rumble
       .leftBumper()
       .and(elevator.isAtBottom())
       .onTrue(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kLeftRumble, 1.0)))
@@ -207,7 +226,7 @@ public class RobotContainer
     //   .onTrue(intake.RunAtVelocity(1))
     //   .onFalse(intake.Stop());
 
-    driverXbox
+    driverXbox//auto intake
       .a()
       .and(() -> !intake.IsCoralStaged())
       .and(() -> elevator.getSetpointPosition() == ElevatorSubsystem.ElevatorPosition.INTAKE)
@@ -218,29 +237,29 @@ public class RobotContainer
       );
 
       
-    driverXbox
+    driverXbox//outtake
       .a()
       .and(() -> elevator.getSetpointPosition() != ElevatorSubsystem.ElevatorPosition.INTAKE)
       .onTrue(intake.RunAtVelocity(1))
       .onFalse(intake.Stop());
     
-    driverXbox
+    driverXbox//backtake
       .leftTrigger(0.2)
       .whileTrue(new RunCommand(() -> intake.RunAtVelocityRaw(-driverXbox.getLeftTriggerAxis() * Constants.IntakeConstants.MAX_SPEED), intake))
       .onFalse(intake.Stop());
       
-    driverXbox
+    driverXbox//outtake
       .rightTrigger(0.2)
       .whileTrue(new RunCommand(() -> intake.RunAtVelocityRaw(driverXbox.getRightTriggerAxis() * Constants.IntakeConstants.MAX_SPEED), intake))
       .onFalse(intake.Stop());
 
-    driverXbox
+    driverXbox//backtake
       .y()
       .onTrue(intake.RunAtVelocity(-1))
       .onFalse(intake.Stop());
 
 
-    driverXbox
+    driverXbox//prepare climber
       .povDown()
       .or(driverXbox.x())
       .onTrue(
@@ -249,7 +268,7 @@ public class RobotContainer
           .andThen(climber.RaiseArm())
       );
 
-    driverXbox
+    driverXbox//un-prepare climber
       .povUp()
       .onTrue(
         climber
@@ -257,13 +276,13 @@ public class RobotContainer
           .andThen(climber.RaiseCoralChute())
       );
 
-    driverXbox
+    driverXbox//climb cage
       .povLeft()
       .or(driverXbox.b())
       .and(climber.isChuteOpen())
       .onTrue(climber.ClimbArm());
 
-    driverXbox
+    driverXbox//drive slow mode
       .leftStick()
       .onTrue(new InstantCommand(() -> {
         driveAngularVelocity
@@ -271,7 +290,7 @@ public class RobotContainer
           .scaleRotation(0.4);
       }));
 
-    driverXbox
+    driverXbox//drive fast mode
       .rightStick()
       .onTrue(new InstantCommand(() -> {
         driveAngularVelocity
