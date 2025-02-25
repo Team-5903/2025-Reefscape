@@ -174,21 +174,23 @@ public class RobotContainer
       // .alongWith(new PoseAutomationCommand(drivebase, intake))
     );
 
-    new Trigger(() -> //left coral station intake automation
-      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationLeft.get()) > 
-        Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
-      !intake.IsCoralPresent() &&
-      !intake.IsCoralStaged()
-    )
-    .onTrue(new AutoIntakeCommand(intake));
+    // new Trigger(() -> //left coral station intake automation
+    //   drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationLeft.get()) > 
+    //     Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
+    //   !intake.IsCoralPresent() &&
+    //   !intake.IsCoralStaged()
+    // )
+    // .and(() -> DriverStation.isTeleopEnabled())
+    // .onTrue(new AutoIntakeCommand(intake));
 
-    new Trigger(() -> //right coral station intake automation
-      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationRight.get()) > 
-        Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
-      !intake.IsCoralPresent() &&
-      !intake.IsCoralStaged()
-    )
-    .onTrue(new AutoIntakeCommand(intake));
+    // new Trigger(() -> //right coral station intake automation
+    //   drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationRight.get()) > 
+    //     Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
+    //   !intake.IsCoralPresent() &&
+    //   !intake.IsCoralStaged()
+    // )
+    // .and(() -> DriverStation.isTeleopEnabled())
+    // .onTrue(new AutoIntakeCommand(intake));
     // elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
 
     driverXbox//elevator go up
