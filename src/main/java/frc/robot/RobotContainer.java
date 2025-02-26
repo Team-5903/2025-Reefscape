@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,7 +35,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.crescendo2024.CrescendoNoteOnField;
@@ -132,7 +137,19 @@ public class RobotContainer
     registerAndNameCommand("OuttakeL1", intake.OuttakeL1());
     
     LoggedPowerDistribution.getInstance(Constants.PDH_ID, ModuleType.kRev);
-    autoChooser = new LoggedDashboardChooser<>("Auto Routine", AutoBuilder.buildAutoChooser());
+    autoChooser = new LoggedDashboardChooser<>("Auto Routine", AutoBuilder.buildAutoChooserWithOptionsModifier("", (stream) -> {
+      List<PathPlannerAuto> mirroredAutos = new ArrayList<PathPlannerAuto>();
+
+       stream.toList().forEach((auto) -> {
+        mirroredAutos.add(auto);
+
+        PathPlannerAuto mirroredAuto = new PathPlannerAuto(auto.getName(), true);
+        mirroredAuto.setName(auto.getName() + " Mirrored");
+        mirroredAutos.add(mirroredAuto);
+       });
+
+      return mirroredAutos.stream();
+    }));
   }
 
 
@@ -174,24 +191,24 @@ public class RobotContainer
       // .alongWith(new PoseAutomationCommand(drivebase, intake))
     );
 
-    // new Trigger(() -> //left coral station intake automation
-    //   drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationLeft.get()) > 
-    //     Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
-    //   !intake.IsCoralPresent() &&
-    //   !intake.IsCoralStaged()
-    // )
-    // .and(() -> DriverStation.isTeleopEnabled())
-    // .onTrue(new AutoIntakeCommand(intake));
+    new Trigger(() -> //left coral station intake automation
+      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationLeft.get()) > 
+        Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
+      !intake.IsCoralPresent() &&
+      !intake.IsCoralStaged()
+    )
+    .and(() -> DriverStation.isTeleopEnabled())
+    .onTrue(new AutoIntakeCommand(intake));
 
-    // new Trigger(() -> //right coral station intake automation
-    //   drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationRight.get()) > 
-    //     Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
-    //   !intake.IsCoralPresent() &&
-    //   !intake.IsCoralStaged()
-    // )
-    // .and(() -> DriverStation.isTeleopEnabled())
-    // .onTrue(new AutoIntakeCommand(intake));
-    // elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
+    new Trigger(() -> //right coral station intake automation
+      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationRight.get()) > 
+        Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
+      !intake.IsCoralPresent() &&
+      !intake.IsCoralStaged()
+    )
+    .and(() -> DriverStation.isTeleopEnabled())
+    .onTrue(new AutoIntakeCommand(intake));
+    elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
 
     driverXbox//elevator go up
       .rightBumper()
@@ -255,10 +272,27 @@ public class RobotContainer
       .whileTrue(new RunCommand(() -> intake.RunAtVelocityRaw(driverXbox.getRightTriggerAxis() * Constants.IntakeConstants.MAX_SPEED), intake))
       .onFalse(intake.Stop());
 
-    driverXbox//backtake
+    driverXbox//drive to nearest coral station
       .y()
-      .onTrue(intake.RunAtVelocity(-1))
-      .onFalse(intake.Stop());
+      .and(driverXbox
+        .axisLessThan(0, 0.2)
+      )
+      .and(driverXbox
+        .axisLessThan(1, 0.2)
+      )
+      .and(driverXbox
+        .axisLessThan(4, 0.2)
+      )
+      .whileTrue(
+        elevator.setSetpointPositionCommand(ElevatorPosition.INTAKE)
+          .alongWith(
+            new DeferredCommand(() -> drivebase.driveToPose(
+              drivebase.getPose().nearest(Constants.FieldConstants.coralStationPoses.get())
+            ), Set.of(drivebase)
+          )
+        )
+      );
+      
 
 
     driverXbox//prepare climber
