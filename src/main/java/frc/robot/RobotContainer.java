@@ -208,7 +208,7 @@ public class RobotContainer
     )
     .and(() -> DriverStation.isTeleopEnabled())
     .onTrue(new AutoIntakeCommand(intake));
-    elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
+    // elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
 
     driverXbox//elevator go up
       .rightBumper()

@@ -71,7 +71,7 @@ public final class Constants
     public static final double INTAKE_HEIGHT = 0.0;
     public static final double L1_HEIGHT = 10.0;
     public static final double L2_HEIGHT = 30.0;
-    public static final double L3_HEIGHT = 63.0;
+    public static final double L3_HEIGHT = 65.0;
     public static final double L4_HEIGHT = 130.0;
     
     public static final double SETPOINT_TOLERANCE = 1.0;
