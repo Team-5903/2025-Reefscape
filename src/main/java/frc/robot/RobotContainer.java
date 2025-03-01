@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoIntakeCommand;
+import frc.robot.commands.AutoIntakeCommandTeleop;
 import frc.robot.commands.PoseAutomationCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -75,6 +76,7 @@ public class RobotContainer
                                                             .withControllerRotationAxis(() -> -driverXbox.getRightX())
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
+                                                            .scaleRotation(1.5)
                                                             .allianceRelativeControl(true);
 
   /**
@@ -198,7 +200,7 @@ public class RobotContainer
       !intake.IsCoralStaged()
     )
     .and(() -> DriverStation.isTeleopEnabled())
-    .onTrue(new AutoIntakeCommand(intake));
+    .onTrue(new AutoIntakeCommandTeleop(intake));
 
     new Trigger(() -> //right coral station intake automation
       drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationRight.get()) > 
@@ -207,7 +209,7 @@ public class RobotContainer
       !intake.IsCoralStaged()
     )
     .and(() -> DriverStation.isTeleopEnabled())
-    .onTrue(new AutoIntakeCommand(intake));
+    .onTrue(new AutoIntakeCommandTeleop(intake));
     // elevator.setDefaultCommand(elevator.DriveManual(() -> operatorXbox.getRightTriggerAxis() - operatorXbox.getLeftTriggerAxis()));
 
     driverXbox//elevator go up
@@ -249,7 +251,7 @@ public class RobotContainer
       .a()
       .and(() -> !intake.IsCoralStaged())
       .and(() -> elevator.getSetpointPosition() == ElevatorSubsystem.ElevatorPosition.INTAKE)
-      .onTrue(new AutoIntakeCommand(intake)
+      .onTrue(new AutoIntakeCommandTeleop(intake)
         .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 1.0)))
         .andThen(new WaitCommand(0.25))
         .andThen(new InstantCommand(() -> driverXbox.setRumble(RumbleType.kBothRumble, 0.0)))
@@ -316,14 +318,16 @@ public class RobotContainer
       .povLeft()
       .or(driverXbox.b())
       .and(climber.isChuteOpen())
-      .onTrue(climber.ClimbArm());
+      .onTrue(climber.ClimbArm()
+        .alongWith(elevator.setSetpointPositionCommand(ElevatorPosition.L2))
+      );
 
     driverXbox//drive slow mode
       .leftStick()
       .onTrue(new InstantCommand(() -> {
         driveAngularVelocity
           .scaleTranslation(0.4)
-          .scaleRotation(0.4);
+          .scaleRotation(0.75);
       }));
 
     driverXbox//drive fast mode
@@ -331,7 +335,7 @@ public class RobotContainer
       .onTrue(new InstantCommand(() -> {
         driveAngularVelocity
           .scaleTranslation(0.8)
-          .scaleRotation(0.8);
+          .scaleRotation(1.5);
       }));
 
 

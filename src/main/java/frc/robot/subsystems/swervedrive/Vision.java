@@ -147,6 +147,7 @@ public class Vision
     {
       Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
       Logger.recordOutput("Vision/" + camera.name() + "/CameraLocation", new Pose3d(Robot.isSimulation() ? swerveDrive.getSimulationDriveTrainPose().get() : swerveDrive.getPose()).plus(camera.robotToCamTransform));
+      Logger.recordOutput("Vision/" + camera.name() + "/isConnected", camera.camera.isConnected());
       if (poseEst.isPresent())
       {
         var pose = poseEst.get();
