@@ -20,8 +20,10 @@ public class AutoIntakeCommandTeleop extends SequentialCommandGroup {
     addCommands(intake.RunAtVelocity(2));
     addCommands(new WaitUntilCommand(() -> intake.IsCoralStaged()));
     addCommands(intake.RunAtVelocity(0.25));
-    addCommands(new WaitUntilCommand(() -> intake.IsCoralPresent()));
-    addCommands(new WaitCommand(0.5));
+    addCommands(new WaitUntilCommand(() -> intake.IsCoralPresent() && !intake.IsCoralStaged()));
+    addCommands(intake.RunAtVelocity(-0.25));
+    addCommands(new WaitUntilCommand(() -> intake.IsCoralStaged()));
+    // addCommands(new WaitCommand(0.25));
     addCommands(intake.Stop());
   }
 }
