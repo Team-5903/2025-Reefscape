@@ -599,6 +599,7 @@ public class Vision
         var    estStdDevs = singleTagStdDevs;
         int    numTags    = 0;
         double avgDist    = 0;
+        double avgAmbiguity    = 0;
 
         // Precalculation - see how many tags we found, and calculate an average-distance metric
         for (var tgt : targets)
@@ -615,7 +616,23 @@ public class Vision
                   .toPose2d()
                   .getTranslation()
                   .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+
+          avgAmbiguity += tgt.getPoseAmbiguity();
         }
+
+        avgDist /= numTags;
+        avgAmbiguity /= numTags;
+
+        // switch(numTags)
+        // {
+        //   case 0:
+        //   case 1:
+        //     if(avgDist > 4)
+        //     {
+        //       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        //     }
+
+        // }
 
         if (numTags == 0)
         {
@@ -624,7 +641,6 @@ public class Vision
         } else
         {
           // One or more tags visible, run the full heuristic.
-          avgDist /= numTags;
           // Decrease std devs if multiple targets are visible
           if (numTags > 1)
           {
