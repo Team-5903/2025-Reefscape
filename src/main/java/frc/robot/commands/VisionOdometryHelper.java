@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.ejml.simple.SimpleMatrix;
@@ -196,7 +197,7 @@ public class VisionOdometryHelper extends Command {
       Logger.recordOutput("Vision/" + x.name + "/Timestamps", timeStampList.stream().mapToDouble(z -> z).toArray());
       Logger.recordOutput("Vision/" + x.name + "/averageDistanceToTargets", averageDistanceToTargetList.stream().mapToDouble(z -> z).toArray());
       Logger.recordOutput("Vision/" + x.name + "/averageAmbiguitys", averageAmbiguityList.stream().mapToDouble(z -> z).toArray());
-      Logger.recordOutput("Vision/" + x.name + "/StdDevs", matrixList.toArray(Matrix[]::new));
+      Logger.recordOutput("Vision/" + x.name + "/StdDevs", matrixList.stream().map(z -> z.getData()).flatMapToDouble(Arrays::stream).toArray());
 
 
     });
