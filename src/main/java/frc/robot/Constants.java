@@ -137,4 +137,9 @@ public final class Constants
     public static final double PID_P = 0.3;
     public static final double ARM_SETPOINT_TOLERANCE = 5;
   }
+
+  public static final class VisionConstants
+  {
+    public static final double MAX_Z_ERROR = 0.75;
+  }
 }

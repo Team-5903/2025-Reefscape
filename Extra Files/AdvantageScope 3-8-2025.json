@@ -3,11 +3,11 @@
     {
       "x": -8,
       "y": -8,
-      "width": 1552,
-      "height": 840,
+      "width": 2576,
+      "height": 1416,
       "state": {
         "sidebar": {
-          "width": 224,
+          "width": 410,
           "expanded": [
             "/SmartDashboard",
             "/SmartDashboard/swerve",
@@ -15,7 +15,6 @@
             "/SmartDashboard/Field",
             "/SmartDashboard/Field/Robot",
             "/SmartDashboard/swerve/advantagescope/robotRotation",
-            "/RealOutputs/Field",
             "/DriverStation/Joystick0",
             "/SystemStats/CANBus",
             "/RealOutputs/Drive/module3/drive",
@@ -33,12 +32,18 @@
             "/RealOutputs/Vision/RightCamera",
             "/RealOutputs/Vision/RightCamera/Pose",
             "/RealOutputs/Vision/RightCamera/Targets",
+            "/RealOutputs/Vision/LeftCamera",
             "/RealOutputs/Vision/FrontCamera",
-            "/RealOutputs/Intake"
+            "/RealOutputs/Vision/CENTER_CAM",
+            "/RealOutputs/Vision/CENTER_CAM/Targets",
+            "/RealOutputs/Vision/CENTER_CAM/Targets/5",
+            "/RealOutputs/Vision/CENTER_CAM/Targets/5/rotation",
+            "/RealOutputs/Vision/CENTER_CAM/Targets/5/translation",
+            "/RealOutputs/Vision/LEFT_CAM"
           ]
         },
         "tabs": {
-          "selected": 11,
+          "selected": 8,
           "tabs": [
             {
               "type": 0,
@@ -362,7 +367,7 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "2024 KitBot"
+                      "model": "2025 KitBot"
                     }
                   },
                   {
@@ -408,11 +413,31 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "/RealOutputs/Vision/LeftCamera/Pose",
-                    "logType": "Pose2d",
+                    "logKey": "/RealOutputs/Vision/FrontCamera/Poses",
+                    "logType": "Pose2d[]",
                     "visible": true,
                     "options": {
-                      "model": "2024 KitBot",
+                      "model": "2025 KitBot",
+                      "color": "#ff0000"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "/RealOutputs/Vision/FrontCamera/Targets",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "/RealOutputs/Vision/LeftCamera/Poses",
+                    "logType": "Pose2d[]",
+                    "visible": true,
+                    "options": {
+                      "model": "2025 KitBot",
                       "color": "#00ff00"
                     }
                   },
@@ -428,11 +453,11 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "/RealOutputs/Vision/RightCamera/Pose",
-                    "logType": "Pose2d",
+                    "logKey": "/RealOutputs/Vision/RightCamera/Poses",
+                    "logType": "Pose2d[]",
                     "visible": true,
                     "options": {
-                      "model": "2024 KitBot",
+                      "model": "2025 KitBot",
                       "color": "#ffff00"
                     }
                   },
@@ -442,27 +467,7 @@
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
-                      "color": "#00ff00",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "ghost",
-                    "logKey": "/RealOutputs/Vision/FrontCamera/Pose",
-                    "logType": "Pose2d",
-                    "visible": true,
-                    "options": {
-                      "model": "2024 KitBot",
-                      "color": "#ff0000"
-                    }
-                  },
-                  {
-                    "type": "vision",
-                    "logKey": "/RealOutputs/Vision/FrontCamera/Targets",
-                    "logType": "Pose3d[]",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00",
+                      "color": "#ffff00",
                       "size": "normal"
                     }
                   }
@@ -475,17 +480,17 @@
                 "cameraIndex": -1,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  4.36132462012894,
-                  6.762439136562096,
-                  0.7811577352510126
+                  5.44063220329001,
+                  8.632566157266542,
+                  -4.82863524122016
                 ],
                 "cameraTarget": [
-                  4.385864481069677,
-                  -5.359596581859377,
-                  1.6284662322338606
+                  5.448597678305841,
+                  -5.461918491809615,
+                  0.4402322580329132
                 ]
               },
-              "controlsHeight": 100
+              "controlsHeight": 255
             },
             {
               "type": 1,

@@ -2,6 +2,7 @@ package frc.robot.Util;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -9,9 +10,13 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
-import frc.robot.Robot;
+import org.photonvision.targeting.PhotonPipelineResult;
 
+import frc.robot.Robot;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 public class AprilTagCamera {
     
@@ -48,11 +53,25 @@ public class AprilTagCamera {
 
         this.cameraSim = new PhotonCameraSim(this.camera, cameraProp);
         this.cameraSim.enableDrawWireframe(true);
+        this.cameraSim.enableProcessedStream(true);
       }
     }
 
-    public List<Optional<EstimatedRobotPose>> getRobotPoses()
+    public List<EstimatedRobotPose> getRobotPoses(Pose2d referencePose, Predicate<? super EstimatedRobotPose> filter)
     {
-        return (Robot.isReal() ? camera.getAllUnreadResults() : cameraSim.getCamera().getAllUnreadResults()).stream().map(x -> this.poseEstimator.update(x)).toList();
+        this.poseEstimator.setReferencePose(referencePose);
+        return (Robot.isReal() ? camera.getAllUnreadResults() : cameraSim.getCamera().getAllUnreadResults())
+            .stream()
+            .map(x -> this.poseEstimator.update(x))
+            .filter(x -> x.isPresent())
+            .map(x -> x.get())
+            .filter(filter)
+            .toList();
     }
+
+    public Transform3d getTransform()
+    {
+        return this.poseEstimator.getRobotToCameraTransform();
+    }
+    
 }

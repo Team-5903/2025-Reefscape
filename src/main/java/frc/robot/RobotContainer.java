@@ -30,6 +30,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoIntakeCommand;
 import frc.robot.commands.AutoIntakeCommandTeleop;
 import frc.robot.commands.PoseAutomationCommand;
+import frc.robot.commands.VisionOdometryHelper;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -190,7 +191,8 @@ public class RobotContainer
   
     drivebase.setDefaultCommand(
       driveFieldOrientedAnglularVelocity
-      // .alongWith(new PoseAutomationCommand(drivebase, intake))
+      .alongWith(new VisionOdometryHelper(drivebase))
+      .ignoringDisable(true)
     );
 
     new Trigger(() -> //left coral station intake automation
