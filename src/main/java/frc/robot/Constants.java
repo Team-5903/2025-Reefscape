@@ -108,7 +108,9 @@ public final class Constants
 
   public static final class FieldConstants 
   {
-    public static final Translation2d reefCenter = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
+    private static final Translation2d reefCenterBlue = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
+    public static final Supplier<Translation2d> reefCenter = () ->  DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red ? FlippingUtil.flipFieldPosition(reefCenterBlue) : reefCenterBlue;
+    public static Distance reefAimZone = Distance.ofBaseUnits(2.0, edu.wpi.first.units.Units.Meters);
     public static Distance coralStationAutomationZone = Distance.ofBaseUnits(1.0, edu.wpi.first.units.Units.Meters);
     private static final Translation2d m_coralStationLeft = new Translation2d(0.962, 7.472);
     private static final Translation2d m_coralStationRight = Util.mirrorTranslation(m_coralStationLeft);

@@ -76,6 +76,11 @@ public class RobotContainer
                                                                 () -> driverXbox.getLeftX() * -1)
                                                             .withControllerRotationAxis(() -> -driverXbox.getRightX())
                                                             .deadband(OperatorConstants.DEADBAND)
+                                                            .aimWhile(() -> 
+                                                              DriverStation.isTeleopEnabled() && 
+                                                              Math.abs(driverXbox.getRightX()) < Constants.OperatorConstants.DEADBAND * 2 && 
+                                                              drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.reefCenter.get()) < Constants.FieldConstants.reefAimZone.magnitude()
+                                                            )
                                                             .scaleTranslation(0.8)
                                                             .scaleRotation(1.5)
                                                             .allianceRelativeControl(true);
@@ -178,6 +183,9 @@ public class RobotContainer
   private void configureBindings()
   {
 
+    new Trigger(() -> DriverStation.isTeleopEnabled())
+      .onTrue(new InstantCommand(() -> driveAngularVelocity.aim(new Pose2d(Constants.FieldConstants.reefCenter.get(), Rotation2d.fromDegrees(0)))));
+
     Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
@@ -192,7 +200,7 @@ public class RobotContainer
     drivebase.setDefaultCommand(
       driveFieldOrientedAnglularVelocity
       .alongWith(new VisionOdometryHelper(drivebase))
-      .ignoringDisable(true)
+      .ignoringDisable(false)
     );
 
     new Trigger(() -> //left coral station intake automation
