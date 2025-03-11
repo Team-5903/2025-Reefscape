@@ -68,7 +68,7 @@ public class VisionOdometryHelper extends Command {
               new Translation3d(Units.inchesToMeters(3.812),
                                 Units.inchesToMeters(-8.729),
                                 Units.inchesToMeters(8.747)),
-              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(-90))
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(-85))
             )
           ), PoseStrategy.CLOSEST_TO_REFERENCE_POSE)
         );
@@ -76,9 +76,9 @@ public class VisionOdometryHelper extends Command {
           new PhotonPoseEstimator(fieldLayout, 
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
             new Transform3d(
-              new Translation3d(Units.inchesToMeters(14.75),
-                                Units.inchesToMeters(-1.25),
-                                Units.inchesToMeters(17.75)),
+              new Translation3d(Units.inchesToMeters(11.75),
+                                Units.inchesToMeters(1.875),
+                                Units.inchesToMeters(15.75)),
               new Rotation3d(0, Units.degreesToRadians(0), 0)
             )
           ), PoseStrategy.CLOSEST_TO_REFERENCE_POSE)
