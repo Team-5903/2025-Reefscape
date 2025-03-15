@@ -10,6 +10,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -44,6 +45,7 @@ import java.util.Set;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.crescendo2024.CrescendoNoteOnField;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -76,11 +78,11 @@ public class RobotContainer
                                                                 () -> driverXbox.getLeftX() * -1)
                                                             .withControllerRotationAxis(() -> -driverXbox.getRightX())
                                                             .deadband(OperatorConstants.DEADBAND)
-                                                            // .aimWhile(() -> 
-                                                            //   DriverStation.isTeleopEnabled() && 
-                                                            //   Math.abs(driverXbox.getRightX()) < Constants.OperatorConstants.DEADBAND * 2 && 
-                                                            //   drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.reefCenter.get()) < Constants.FieldConstants.reefAimZone.magnitude()
-                                                            // )
+                                                            .aimWhile(() -> 
+                                                              DriverStation.isTeleopEnabled() && 
+                                                              Math.abs(driverXbox.getRightX()) < Constants.OperatorConstants.DEADBAND * 2 && 
+                                                              drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.reefCenter.get()) < Constants.FieldConstants.reefAimZone.magnitude()
+                                                            )
                                                             .scaleTranslation(0.8)
                                                             .scaleRotation(1.5)
                                                             .allianceRelativeControl(true);
@@ -183,8 +185,19 @@ public class RobotContainer
   private void configureBindings()
   {
 
-    // new Trigger(() -> DriverStation.isTeleopEnabled())
-    //   .onTrue(new InstantCommand(() -> driveAngularVelocity.aim(new Pose2d(Constants.FieldConstants.reefCenter.get(), Rotation2d.fromDegrees(0)))));
+    new Trigger(() -> DriverStation.isTeleopEnabled())
+      .whileTrue(
+        new RunCommand(() -> {
+          double robotReefSide = Math.round((drivebase.getPose().getTranslation().minus(Constants.FieldConstants.reefCenter.get()).getAngle().getDegrees() + 180) / (360.0 / Constants.FieldConstants.reefSides));
+          Logger.recordOutput("Field/RobotReefSide", robotReefSide);
+          
+          Rotation2d reefSideRotation = Rotation2d.fromDegrees(robotReefSide * (360.0 / Constants.FieldConstants.reefSides));
+          Pose2d aimPose = new Pose2d(drivebase.getPose().getTranslation().plus(new Translation2d(1, reefSideRotation)), new Rotation2d());
+          driveAngularVelocity.aim(aimPose);
+
+          Logger.recordOutput("Field/AimPose", aimPose);
+        })
+      );
 
     Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
