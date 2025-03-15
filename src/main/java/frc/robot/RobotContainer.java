@@ -31,7 +31,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoIntakeCommand;
 import frc.robot.commands.AutoIntakeCommandTeleop;
 import frc.robot.commands.PoseAutomationCommand;
-import frc.robot.commands.VisionOdometryHelper;
+import frc.robot.commands.VisionSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -68,6 +68,7 @@ public class RobotContainer
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final IntakeSubsystem intake = new IntakeSubsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
+  private final VisionSubsystem vision = new VisionSubsystem(drivebase);
 
   private final LoggedDashboardChooser<Command> autoChooser;
   /**
@@ -208,8 +209,6 @@ public class RobotContainer
     Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
     Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngleKeyboard);
-
-    new VisionOdometryHelper(drivebase).schedule();
   
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
