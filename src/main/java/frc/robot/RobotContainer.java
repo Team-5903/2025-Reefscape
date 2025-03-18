@@ -213,7 +213,7 @@ public class RobotContainer
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
     new Trigger(() -> //left coral station intake automation
-      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationLeft.get()) > 
+      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationLeft.get()) < 
         Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
       !intake.IsCoralPresent() &&
       !intake.IsCoralStaged()
@@ -222,7 +222,7 @@ public class RobotContainer
     .onTrue(new AutoIntakeCommandTeleop(intake));
 
     new Trigger(() -> //right coral station intake automation
-      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationRight.get()) > 
+      drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.coralStationRight.get()) < 
         Constants.FieldConstants.coralStationAutomationZone.baseUnitMagnitude() &&
       !intake.IsCoralPresent() &&
       !intake.IsCoralStaged()

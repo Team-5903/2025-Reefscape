@@ -1,0 +1,20 @@
+Pit Stuff
+	Climber is reset
+	Zip tie on battery
+
+Field Setup Stuff
+	Make sure robot is lined up properly
+	Robot intake is facing driver stations
+	Coral in robot intake
+	Plug in climber
+	Plug in orange pi
+	Elevator is all the way down
+	Ropes on elevator are taught
+	Turn robot on
+	Verify lights on all motor controllers
+	Verify lights on orange pi
+
+Driver Station Stuff
+	Verify correct auto is selected
+	Verify controller is connected
+	Verify controller is in slot 0
