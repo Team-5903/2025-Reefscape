@@ -79,11 +79,11 @@ public class RobotContainer
                                                                 () -> driverXbox.getLeftX() * -1)
                                                             .withControllerRotationAxis(() -> -driverXbox.getRightX())
                                                             .deadband(OperatorConstants.DEADBAND)
-                                                            .aimWhile(() -> 
-                                                              DriverStation.isTeleopEnabled() && 
-                                                              Math.abs(driverXbox.getRightX()) < Constants.OperatorConstants.DEADBAND * 2 && 
-                                                              drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.reefCenter.get()) < Constants.FieldConstants.reefAimZone.magnitude()
-                                                            )
+                                                            // .aimWhile(() -> 
+                                                            //   DriverStation.isTeleopEnabled() && 
+                                                            //   Math.abs(driverXbox.getRightX()) < Constants.OperatorConstants.DEADBAND * 2 && 
+                                                            //   drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.reefCenter.get()) < Constants.FieldConstants.reefAimZone.magnitude()
+                                                            // )
                                                             .scaleTranslation(0.8)
                                                             .scaleRotation(1.5)
                                                             .allianceRelativeControl(true);
@@ -186,7 +186,7 @@ public class RobotContainer
   private void configureBindings()
   {
 
-    new Trigger(() -> DriverStation.isTeleopEnabled())
+    new Trigger(() -> DriverStation.isTeleopEnabled())//aim at reef
       .whileTrue(
         new RunCommand(() -> {
           double robotReefSide = Math.round((drivebase.getPose().getTranslation().minus(Constants.FieldConstants.reefCenter.get()).getAngle().getDegrees() + 180) / (360.0 / Constants.FieldConstants.reefSides));
@@ -199,6 +199,22 @@ public class RobotContainer
           Logger.recordOutput("Field/AimPose", aimPose);
         })
       );
+
+    new Trigger(() -> drivebase.getPose().getTranslation().getDistance(Constants.FieldConstants.reefCenter.get()) < Constants.FieldConstants.reefSlowZone.magnitude())
+        .onTrue(
+          new InstantCommand(() -> {
+            driveAngularVelocity
+              .scaleTranslation(0.2)
+              .scaleRotation(0.4);
+          })
+        )
+        .onFalse(
+          new InstantCommand(() -> {
+            driveAngularVelocity
+              .scaleTranslation(0.8)
+              .scaleRotation(1.5);
+          })
+        );
 
     Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
@@ -341,21 +357,21 @@ public class RobotContainer
         .alongWith(elevator.setSetpointPositionCommand(ElevatorPosition.L2))
       );
 
-    driverXbox//drive slow mode
-      .leftStick()
-      .onTrue(new InstantCommand(() -> {
-        driveAngularVelocity
-          .scaleTranslation(0.4)
-          .scaleRotation(0.75);
-      }));
+    // driverXbox//drive slow mode
+    //   .leftStick()
+    //   .onTrue(new InstantCommand(() -> {
+    //     driveAngularVelocity
+    //       .scaleTranslation(0.4)
+    //       .scaleRotation(0.75);
+    //   }));
 
-    driverXbox//drive fast mode
-      .rightStick()
-      .onTrue(new InstantCommand(() -> {
-        driveAngularVelocity
-          .scaleTranslation(0.8)
-          .scaleRotation(1.5);
-      }));
+    // driverXbox//drive fast mode
+    //   .rightStick()
+    //   .onTrue(new InstantCommand(() -> {
+    //     driveAngularVelocity
+    //       .scaleTranslation(0.8)
+    //       .scaleRotation(1.5);
+    //   }));
 
 
     driverXbox
