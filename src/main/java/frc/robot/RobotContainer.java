@@ -186,6 +186,13 @@ public class RobotContainer
   private void configureBindings()
   {
 
+    new Trigger(() -> DriverStation.isFMSAttached() && DriverStation.isTeleopEnabled() && DriverStation.getMatchTime() < Constants.OperatorConstants.CLIMBER_PREPARE_TIME)
+      .onTrue(
+        climber
+        .DropCoralChute()
+        .andThen(climber.RaiseArm())
+      );
+
     new Trigger(() -> DriverStation.isTeleopEnabled())//aim at reef
       .whileTrue(
         new RunCommand(() -> {
@@ -354,7 +361,7 @@ public class RobotContainer
       .or(driverXbox.b())
       .and(climber.isChuteOpen())
       .onTrue(climber.ClimbArm()
-        .alongWith(elevator.setSetpointPositionCommand(ElevatorPosition.L2))
+        .alongWith(elevator.setSetpointPositionCommand(ElevatorPosition.L3))
       );
 
     // driverXbox//drive slow mode

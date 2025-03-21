@@ -98,6 +98,7 @@ public final class Constants
 
   public static class OperatorConstants
   {
+    public static final double CLIMBER_PREPARE_TIME = 22.0;
 
     // Joystick Deadband
     public static final double DEADBAND        = 0.1;
@@ -134,10 +135,10 @@ public final class Constants
   public static final class ClimberConstants 
   {
     public static final int CLIMBER_MOTOR = 13;
-    public static final double FORWARD_LIMIT = 210;
+    public static final double FORWARD_LIMIT = 225;
     public static final int LINEAR_ACTUATOR_LEFT = 0;
     public static final int LINEAR_ACTUATOR_RIGHT = 1;
-    public static final int CLIMB_POSITION = 70;
+    public static final int CLIMB_POSITION = 65;
     public static final double PID_P = 0.3;
     public static final double ARM_SETPOINT_TOLERANCE = 5;
   }
