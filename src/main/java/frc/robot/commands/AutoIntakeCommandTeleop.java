@@ -17,7 +17,7 @@ public class AutoIntakeCommandTeleop extends SequentialCommandGroup {
   public AutoIntakeCommandTeleop(IntakeSubsystem intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(intake.RunAtVelocity(2));
+    addCommands(intake.RunAtVelocity(1.75));
     addCommands(new WaitUntilCommand(() -> intake.IsCoralStaged()));
     addCommands(intake.RunAtVelocity(0.25));
     addCommands(new WaitUntilCommand(() -> intake.IsCoralPresent() && !intake.IsCoralStaged()));

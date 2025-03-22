@@ -361,7 +361,7 @@ public class RobotContainer
       .or(driverXbox.b())
       .and(climber.isChuteOpen())
       .onTrue(climber.ClimbArm()
-        .alongWith(elevator.setSetpointPositionCommand(ElevatorPosition.L3))
+        .alongWith(elevator.setSetpointPositionCommand(ElevatorPosition.L2))
       );
 
     // driverXbox//drive slow mode

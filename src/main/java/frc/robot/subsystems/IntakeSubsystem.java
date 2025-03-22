@@ -103,7 +103,7 @@ public class IntakeSubsystem extends SubsystemBase {
   {
     return RunAtVelocity(1)
       .until(() -> !IsCoralStaged())
-      .andThen(new InstantCommand(() -> RunAtVelocityRaw(0.5, 1.5)))
+      .andThen(new InstantCommand(() -> RunAtVelocityRaw(1.0, 3)))
       // .until(() -> !IsCoralPresent())
       .andThen(new WaitCommand(2))
       .andThen(this.Stop());
